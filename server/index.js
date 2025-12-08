@@ -4,6 +4,7 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import mongoose from "mongoose";
+import productRoutes from "./routes/products.js";
 
 dotenv.config();
 
@@ -77,6 +78,8 @@ app.use(
 );
 app.use(express.json());
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
+
+app.use("/api/products", productRoutes);
 
 app.get("/health", (_req, res) => {
   res.json({

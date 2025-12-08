@@ -8,6 +8,7 @@
 - Env samples: copy `client/env.example` → `client/.env.local` (or `.env`) and `server/env.example` → `server/.env` and adjust values.
 - Tooling: server dev uses `nodemon`; client lint via `npm run lint`; format via `npm run format`.
 - MongoDB: use an Atlas SRV string for `MONGODB_URI` (no local fallback).
+- API Endpoint Log: see `docs/api-endpoints.md` for a categorized list of routes.
 
 Kanban-ready backlog with titles, descriptions, and acceptance criteria. Check items as you complete them.
 
@@ -32,7 +33,7 @@ Kanban-ready backlog with titles, descriptions, and acceptance criteria. Check i
 - [x] [BACKEND] Data Models  
   Description: Define Mongoose models: Product, MenuItem, Order, Location (User optional).  
   AC: Schemas created with validation; models exportable; sample create/read works.
-- [ ] [BACKEND] Catalog Endpoints  
+- [x] [BACKEND] Catalog Endpoints  
   Description: CRUD/read endpoints for products (list, single, categories/filters).  
   AC: GET products supports category/filter; GET by id works; errors validated.
 - [ ] [BACKEND] Menu Endpoints  
