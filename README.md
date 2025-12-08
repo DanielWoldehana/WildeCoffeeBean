@@ -72,7 +72,7 @@ Kanban-ready backlog with titles, descriptions, and acceptance criteria. Check i
 - [x] [MAPS] User Geolocation Flow  
   Description: Handle opt-in geolocation, send coords for optional distance calc.  
   AC: Client requests permission, handles deny/fail; server accepts coords and returns distance (or noop if skipped).
-- [ ] [MAPS] Map Component  
+- [x] [MAPS] Map Component  
   Description: Choose map provider and render store + optional user pin.  
   AC: Map shows store pin; if permission granted, user pin appears; fallback UI when blocked.
 
