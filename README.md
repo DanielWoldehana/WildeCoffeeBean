@@ -44,7 +44,7 @@ Kanban-ready backlog with titles, descriptions, and acceptance criteria. Check i
 - [x] [BACKEND] Order Endpoints  
   Description: Create order, calculate totals/taxes, update status (placed→ready→picked up), webhook receiver stub.  
   AC: POST order validates payload and returns totals/id; status updates via endpoint; webhook route exists and logs payload.
-- [ ] [BACKEND] Validation Layer  
+- [x] [BACKEND] Validation Layer  
   Description: Central input validation (zod/joi/manual) and consistent error responses.  
   AC: All public endpoints validate inputs; errors return HTTP codes + messages.
 - [x] [BACKEND] Seed Script  

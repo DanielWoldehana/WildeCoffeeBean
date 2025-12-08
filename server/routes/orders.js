@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import { Order } from "../models/index.js";
+import { errorResponse, isObjectId } from "../utils/validation.js";
 
 const router = express.Router();
 
@@ -59,7 +60,7 @@ router.post("/", async (req, res, next) => {
   try {
     const errors = validateOrderPayload(req.body);
     if (errors.length) {
-      return res.status(400).json({ error: "Validation failed", details: errors });
+      return errorResponse(res, 400, "Validation failed", errors);
     }
 
     const { customer, items, pickupTime, taxRate = 0, notes, paymentRef, paymentStatus } =
@@ -87,12 +88,12 @@ router.post("/", async (req, res, next) => {
 router.get("/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ error: "Invalid order id" });
+    if (!isObjectId(id)) {
+      return errorResponse(res, 400, "Invalid order id");
     }
     const order = await Order.findById(id).lean();
     if (!order) {
-      return res.status(404).json({ error: "Order not found" });
+      return errorResponse(res, 404, "Order not found");
     }
     res.json({ data: order });
   } catch (err) {
@@ -106,20 +107,24 @@ router.patch("/:id/status", async (req, res, next) => {
     const { id } = req.params;
     const { status, paymentStatus } = req.body;
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ error: "Invalid order id" });
+    if (!isObjectId(id)) {
+      return errorResponse(res, 400, "Invalid order id");
     }
 
     if (status && !allowedStatuses.includes(status)) {
-      return res
-        .status(400)
-        .json({ error: `status must be one of ${allowedStatuses.join(", ")}` });
+      return errorResponse(
+        res,
+        400,
+        `status must be one of ${allowedStatuses.join(", ")}`
+      );
     }
 
     if (paymentStatus && !allowedPaymentStatuses.includes(paymentStatus)) {
-      return res.status(400).json({
-        error: `paymentStatus must be one of ${allowedPaymentStatuses.join(", ")}`,
-      });
+      return errorResponse(
+        res,
+        400,
+        `paymentStatus must be one of ${allowedPaymentStatuses.join(", ")}`
+      );
     }
 
     const update = {};
@@ -127,7 +132,7 @@ router.patch("/:id/status", async (req, res, next) => {
     if (paymentStatus) update.paymentStatus = paymentStatus;
 
     if (!Object.keys(update).length) {
-      return res.status(400).json({ error: "No valid fields to update" });
+      return errorResponse(res, 400, "No valid fields to update");
     }
 
     const order = await Order.findByIdAndUpdate(
@@ -137,7 +142,7 @@ router.patch("/:id/status", async (req, res, next) => {
     ).lean();
 
     if (!order) {
-      return res.status(404).json({ error: "Order not found" });
+      return errorResponse(res, 404, "Order not found");
     }
 
     res.json({ data: order });
