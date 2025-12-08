@@ -69,7 +69,7 @@ Kanban-ready backlog with titles, descriptions, and acceptance criteria. Check i
 - [x] [MAPS] Location Endpoint  
   Description: Serve store address, hours, contact, and map coordinates.  
   AC: GET location returns address, hours, phone, coords.
-- [ ] [MAPS] User Geolocation Flow  
+- [x] [MAPS] User Geolocation Flow  
   Description: Handle opt-in geolocation, send coords for optional distance calc.  
   AC: Client requests permission, handles deny/fail; server accepts coords and returns distance (or noop if skipped).
 - [ ] [MAPS] Map Component  
