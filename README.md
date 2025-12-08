@@ -66,7 +66,7 @@ Kanban-ready backlog with titles, descriptions, and acceptance criteria. Check i
   AC: Endpoint calls Clover, updates local records, and returns result.
 
 ## Geolocation & Maps
-- [ ] [MAPS] Location Endpoint  
+- [x] [MAPS] Location Endpoint  
   Description: Serve store address, hours, contact, and map coordinates.  
   AC: GET location returns address, hours, phone, coords.
 - [ ] [MAPS] User Geolocation Flow  
