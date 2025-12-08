@@ -39,7 +39,7 @@ Kanban-ready backlog with titles, descriptions, and acceptance criteria. Check i
 - [x] [BACKEND] Menu Endpoints  
   Description: Endpoints to list menu sections/items with availability.  
   AC: GET menu returns sections/items with availability flags; validation on input.
-- [ ] [BACKEND] Order Endpoints  
+- [x] [BACKEND] Order Endpoints  
   Description: Create order, calculate totals/taxes, update status (placed→ready→picked up), webhook receiver stub.  
   AC: POST order validates payload and returns totals/id; status updates via endpoint; webhook route exists and logs payload.
 - [ ] [BACKEND] Validation Layer  

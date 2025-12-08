@@ -14,7 +14,10 @@ Keep this file updated as endpoints are added. Group by category and list method
 - `GET /api/menu/:id` — Fetch single menu item by id.
 
 ## Orders
-- _TBD_ — Add order create/status/webhook endpoints when implemented.
+- `POST /api/orders` — Create order (validates customer/items, computes totals, defaults status=placed, paymentStatus=pending; accepts optional pickupTime, notes, paymentRef, taxRate).
+- `GET /api/orders/:id` — Get order by id.
+- `PATCH /api/orders/:id/status` — Update order status/paymentStatus.
+- `POST /api/orders/webhook` — Webhook stub (logs payload; add signature verification later).
 
 ## Payments
 - _TBD_ — Add Clover payment/webhook endpoints when implemented.

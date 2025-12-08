@@ -6,6 +6,7 @@ import morgan from "morgan";
 import mongoose from "mongoose";
 import productRoutes from "./routes/products.js";
 import menuRoutes from "./routes/menu.js";
+import orderRoutes from "./routes/orders.js";
 
 dotenv.config();
 
@@ -82,6 +83,7 @@ app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 
 app.use("/api/products", productRoutes);
 app.use("/api/menu", menuRoutes);
+app.use("/api/orders", orderRoutes);
 
 app.get("/health", (_req, res) => {
   res.json({
