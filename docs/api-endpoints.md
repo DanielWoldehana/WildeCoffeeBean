@@ -19,9 +19,12 @@ Keep this file updated as endpoints are added. Group by category and list method
 - `PATCH /api/orders/:id/status` — Update order status/paymentStatus.
 - `POST /api/orders/webhook` — Webhook stub (logs payload; add signature verification later).
 
+## Seed & Data
+- Run `npm run seed` in `server/` to populate sample products, menu items, and a location.
+
 ## Payments
 - _TBD_ — Add Clover payment/webhook endpoints when implemented.
 
 ## Locations/Maps
-- _TBD_ — Add location/geolocation endpoints when implemented.
+- Planned: `GET /api/location` — Return address, hours, contact, and coordinates (not yet implemented).
 

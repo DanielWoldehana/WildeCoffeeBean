@@ -9,6 +9,8 @@
 - Tooling: server dev uses `nodemon`; client lint via `npm run lint`; format via `npm run format`.
 - MongoDB: use an Atlas SRV string for `MONGODB_URI` (no local fallback).
 - API Endpoint Log: see `docs/api-endpoints.md` for a categorized list of routes.
+- Seed data: `cd server && npm run seed` to load sample products, menu items (incl. ice cream and chilled grab-and-go), and a location.
+ - Planned location endpoint: `GET /api/location` (not yet implemented) to return address, hours, contact, and coordinates.
 
 Kanban-ready backlog with titles, descriptions, and acceptance criteria. Check items as you complete them.
 
@@ -45,7 +47,7 @@ Kanban-ready backlog with titles, descriptions, and acceptance criteria. Check i
 - [ ] [BACKEND] Validation Layer  
   Description: Central input validation (zod/joi/manual) and consistent error responses.  
   AC: All public endpoints validate inputs; errors return HTTP codes + messages.
-- [ ] [BACKEND] Seed Script  
+- [x] [BACKEND] Seed Script  
   Description: Seed DB with sample products/menu/location.  
   AC: `npm run seed` (or similar) populates collections without duplicates on re-run.
 
