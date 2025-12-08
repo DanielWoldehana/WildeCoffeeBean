@@ -26,5 +26,5 @@ Keep this file updated as endpoints are added. Group by category and list method
 - _TBD_ — Add Clover payment/webhook endpoints when implemented.
 
 ## Locations/Maps
-- Planned: `GET /api/location` — Return address, hours, contact, and coordinates (not yet implemented).
+- `GET /api/location` — Return address, hours, contact, and coordinates (first active location).
 
