@@ -5,14 +5,15 @@
 - Server (Express placeholder): `cd server && npm install && npm run dev` (default http://localhost:4000)
 - Folders: `client/` for the Next.js app, `server/` for the Express API scaffold.
 - Tasks below track backlog progress; tick `[ ]` to `[x]` as you complete items.
+- Env samples: copy `client/env.example` → `client/.env.local` (or `.env`) and `server/env.example` → `server/.env` and adjust values.
 
 Kanban-ready backlog with titles, descriptions, and acceptance criteria. Check items as you complete them.
 
 ## Foundation
-- [ ] [Foundation] Initialize Repo Structure  
+- [x] [Foundation] Initialize Repo Structure  
   Description: Organize `client/` (Next.js) and `server/` (Express) with shared scripts.  
   AC: Repo has client/server folders; npm scripts runnable; README notes structure.
-- [ ] [Foundation] Env & Secrets Setup  
+- [x] [Foundation] Env & Secrets Setup  
   Description: Add `.env` handling for client/server and sample env files.  
   AC: `.env.example` exists; apps load env vars via dotenv/next config; secrets ignored by git.
 - [ ] [Foundation] Dev Tooling & Scripts  
