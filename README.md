@@ -7,7 +7,7 @@
 - Tasks below track backlog progress; tick `[ ]` to `[x]` as you complete items.
 - Env samples: copy `client/env.example` → `client/.env.local` (or `.env`) and `server/env.example` → `server/.env` and adjust values.
 - Tooling: server dev uses `nodemon`; client lint via `npm run lint`; format via `npm run format`.
-- Env samples: copy `client/env.example` → `client/.env.local` (or `.env`) and `server/env.example` → `server/.env` and adjust values.
+- MongoDB: use an Atlas SRV string for `MONGODB_URI` (no local fallback).
 
 Kanban-ready backlog with titles, descriptions, and acceptance criteria. Check items as you complete them.
 
@@ -26,10 +26,10 @@ Kanban-ready backlog with titles, descriptions, and acceptance criteria. Check i
 - [x] [BACKEND] Express Scaffold  
   Description: Create Express server with CORS, helmet, logging, error handler, health check.  
   AC: Server starts; `/health` returns ok; CORS configured; errors return JSON.
-- [ ] [BACKEND] MongoDB Connection  
+- [x] [BACKEND] MongoDB Connection  
   Description: Connect via Mongoose with retry/backoff and status reporting.  
   AC: Connection uses env URI; failed DB shows logged error; status endpoint reflects DB state.
-- [ ] [BACKEND] Data Models  
+- [x] [BACKEND] Data Models  
   Description: Define Mongoose models: Product, MenuItem, Order, Location (User optional).  
   AC: Schemas created with validation; models exportable; sample create/read works.
 - [ ] [BACKEND] Catalog Endpoints  
