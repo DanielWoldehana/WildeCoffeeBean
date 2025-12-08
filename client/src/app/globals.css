@@ -5,6 +5,8 @@
   --coffee-brown: #3d2817;
   --coffee-brown-light: #5a3d2a;
   --coffee-brown-dark: #2a1a0f;
+  --coffee-brown-very-light: #f5f0eb;
+  --coffee-brown-medium-light: #c4b09a;
   --lime-green: #7cb342;
   --lime-green-light: #9ccc65;
   --lime-green-dark: #558b2f;
@@ -20,6 +22,8 @@
   --color-coffee-brown: var(--coffee-brown);
   --color-coffee-brown-light: var(--coffee-brown-light);
   --color-coffee-brown-dark: var(--coffee-brown-dark);
+  --color-coffee-brown-very-light: var(--coffee-brown-very-light);
+  --color-coffee-brown-medium-light: var(--coffee-brown-medium-light);
   --color-lime-green: var(--lime-green);
   --color-lime-green-light: var(--lime-green-light);
   --color-lime-green-dark: var(--lime-green-dark);
@@ -30,5 +34,9 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  font-family:
+    var(--font-geist-sans),
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
