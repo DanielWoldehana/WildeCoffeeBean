@@ -27,4 +27,5 @@ Keep this file updated as endpoints are added. Group by category and list method
 
 ## Locations/Maps
 - `GET /api/location` — Return address, hours, contact, and coordinates (first active location).
+- `POST /api/location/distance` — Body: `{ lat, lng }`, returns distance from user to store coords (km/miles).
 
