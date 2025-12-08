@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,41 +8,22 @@ import AddToCartButton from "@/components/AddToCartButton";
 import Modal from "@/components/Modal";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ErrorDisplay from "@/components/ErrorDisplay";
+import { useProducts } from "@/hooks/useProducts";
 
 export default function ShopPage() {
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [cart, setCart] = useState([]);
-  const [imageErrors, setImageErrors] = useState(new Set());
-
   // Filters
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [showInStockOnly, setShowInStockOnly] = useState(false);
   const [sortBy, setSortBy] = useState("name");
 
-  // Fetch products
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch("/api/products");
-        if (!response.ok) throw new Error("Failed to fetch products");
-        const result = await response.json();
-        setProducts(result.data || []);
-        setFilteredProducts(result.data || []);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProducts();
-  }, []);
+  // Fetch products using custom hook (fetch all, filter client-side for complex search)
+  const { products, loading, error } = useProducts();
+
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [cart, setCart] = useState([]);
+  const [imageErrors, setImageErrors] = useState(new Set());
 
   // Load cart from localStorage
   useEffect(() => {
@@ -53,12 +34,13 @@ export default function ShopPage() {
   }, []);
 
   // Get unique categories
-  const categories = [
-    ...new Set(products.flatMap((p) => p.categories || [])),
-  ].sort();
+  const categories = useMemo(
+    () => [...new Set(products.flatMap((p) => p.categories || []))].sort(),
+    [products]
+  );
 
-  // Apply filters and sorting
-  useEffect(() => {
+  // Apply filters and sorting (client-side for complex search)
+  const filteredProducts = useMemo(() => {
     let filtered = [...products];
 
     // Search filter
@@ -100,7 +82,7 @@ export default function ShopPage() {
       }
     });
 
-    setFilteredProducts(filtered);
+    return filtered;
   }, [products, searchQuery, selectedCategory, showInStockOnly, sortBy]);
 
   const openProductModal = (product) => {

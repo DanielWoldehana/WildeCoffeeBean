@@ -1,55 +1,50 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { useMenu } from "@/hooks/useMenu";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import ErrorDisplay from "@/components/ErrorDisplay";
 
 export default function MenuPage() {
-  const [menuItems, setMenuItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [selectedSection, setSelectedSection] = useState("");
   const [cart, setCart] = useState([]);
   const [selectedMenuItem, setSelectedMenuItem] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchMenu = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch("/api/menu");
-        if (!response.ok) throw new Error("Failed to fetch menu");
-        const result = await response.json();
-        setMenuItems(result.data || []);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchMenu();
-  }, []);
+  // Fetch menu items using custom hook
+  const { menuItems, loading, error } = useMenu();
 
   // Get unique sections
-  const sections = [...new Set(menuItems.map((item) => item.section))].filter(
-    Boolean
+  const sections = useMemo(
+    () => [...new Set(menuItems.map((item) => item.section))].filter(Boolean),
+    [menuItems]
   );
 
   // Filter menu items by section
-  const filteredItems = selectedSection
-    ? menuItems.filter((item) => item.section === selectedSection)
-    : menuItems;
+  const filteredItems = useMemo(
+    () =>
+      selectedSection
+        ? menuItems.filter((item) => item.section === selectedSection)
+        : menuItems,
+    [menuItems, selectedSection]
+  );
 
   // Group items by section
-  const groupedItems = filteredItems.reduce((acc, item) => {
-    const section = item.section || "Other";
-    if (!acc[section]) {
-      acc[section] = [];
-    }
-    acc[section].push(item);
-    return acc;
-  }, {});
+  const groupedItems = useMemo(
+    () =>
+      filteredItems.reduce((acc, item) => {
+        const section = item.section || "Other";
+        if (!acc[section]) {
+          acc[section] = [];
+        }
+        acc[section].push(item);
+        return acc;
+      }, {}),
+    [filteredItems]
+  );
 
   useEffect(() => {
     // Load cart from localStorage
@@ -117,24 +112,17 @@ export default function MenuPage() {
   };
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[var(--lime-green)] border-r-transparent"></div>
-          <p className="text-[var(--coffee-brown)]">Loading menu...</p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner message="Loading menu..." className="min-h-screen" />;
   }
 
   if (error) {
     return (
       <div className="flex min-h-screen items-center justify-center px-4">
         <div className="text-center">
-          <p className="mb-4 text-lg text-red-600">Error: {error}</p>
+          <ErrorDisplay message={`Error: ${error}`} />
           <button
             onClick={() => window.location.reload()}
-            className="rounded-full bg-[var(--lime-green)] px-6 py-2 text-white hover:bg-[var(--lime-green-dark)]"
+            className="mt-4 rounded-full bg-[var(--lime-green)] px-6 py-2 text-white hover:bg-[var(--lime-green-dark)]"
           >
             Retry
           </button>
