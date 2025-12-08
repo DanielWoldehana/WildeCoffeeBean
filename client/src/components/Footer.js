@@ -8,7 +8,7 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <div>
-            <h3 className="mb-4 text-lg font-semibold">Wild Coffee Bean</h3>
+            <h3 className="mb-4 text-lg font-semibold">Wild Bean Coffee</h3>
             <p className="text-sm text-gray-300">
               Fresh roasted coffee beans and handcrafted beverages. Visit us in
               store or order online for pickup.
@@ -60,7 +60,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t border-gray-700 pt-8 text-center text-sm text-gray-400">
-          <p>&copy; {currentYear} Wild Coffee Bean. All rights reserved.</p>
+          <p>&copy; {currentYear} Wild Bean Coffee. All rights reserved.</p>
         </div>
       </div>
     </footer>

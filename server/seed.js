@@ -122,7 +122,7 @@ const menuItems = [
 
 const locations = [
   {
-    name: "Wild Coffee Bean",
+    name: "Wild Bean Coffee",
     address1: "123 Bean St",
     city: "Seattle",
     state: "WA",
@@ -130,7 +130,7 @@ const locations = [
     country: "US",
     coordinates: { lat: 47.6062, lng: -122.3321 },
     phone: "555-555-1234",
-    email: "hello@wildcoffeebean.com",
+    email: "hello@wildbeancoffee.com",
     mapsUrl: "",
     hours: [
       { day: "Monday", opens: "07:00", closes: "18:00" },

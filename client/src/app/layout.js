@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Wild Coffee Bean - Fresh Roasted Coffee & Handcrafted Beverages",
+  title: "Wild Bean Coffee - Fresh Roasted Coffee & Handcrafted Beverages",
   description:
-    "Wild Coffee Bean offers fresh roasted coffee beans, handcrafted beverages, and delicious treats. Order online for pickup or visit us in store.",
+    "Wild Bean Coffee offers fresh roasted coffee beans, handcrafted beverages, and delicious treats. Order online for pickup or visit us in store.",
 };
 
 export default function RootLayout({ children }) {
