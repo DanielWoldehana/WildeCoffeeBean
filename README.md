@@ -23,7 +23,7 @@ Kanban-ready backlog with titles, descriptions, and acceptance criteria. Check i
   AC: `npm run dev` works for both apps; API auto-reloads; lint/format scripts succeed.
 
 ## Backend (Express + MongoDB/Mongoose)
-- [ ] [BACKEND] Express Scaffold  
+- [x] [BACKEND] Express Scaffold  
   Description: Create Express server with CORS, helmet, logging, error handler, health check.  
   AC: Server starts; `/health` returns ok; CORS configured; errors return JSON.
 - [ ] [BACKEND] MongoDB Connection  
