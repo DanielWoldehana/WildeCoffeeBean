@@ -7,7 +7,8 @@ const MenuItemSchema = new mongoose.Schema(
     price: { type: Number, required: true, min: 0 },
     currency: { type: String, default: "USD" },
     section: { type: String, trim: true }, // e.g., Espresso, Tea, Food
-    tags: [{ type: String, trim: true }],
+    tags: [{ type: String, trim: true }], // Kept for backward compatibility
+    allergens: [{ type: String, trim: true }], // Allergy information: Gluten, Lactose, Nuts, Soy, Eggs, etc.
     available: { type: Boolean, default: true },
     image: { type: String, trim: true },
     active: { type: Boolean, default: true },
