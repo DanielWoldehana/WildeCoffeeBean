@@ -1,26 +1,34 @@
 @import "tailwindcss";
 
 :root {
+  /* Wild Coffee Bean Brand Colors */
+  --coffee-brown: #3d2817;
+  --coffee-brown-light: #5a3d2a;
+  --coffee-brown-dark: #2a1a0f;
+  --lime-green: #7cb342;
+  --lime-green-light: #9ccc65;
+  --lime-green-dark: #558b2f;
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: var(--coffee-brown);
+  --accent: var(--lime-green);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-coffee-brown: var(--coffee-brown);
+  --color-coffee-brown-light: var(--coffee-brown-light);
+  --color-coffee-brown-dark: var(--coffee-brown-dark);
+  --color-lime-green: var(--lime-green);
+  --color-lime-green-light: var(--lime-green-light);
+  --color-lime-green-dark: var(--lime-green-dark);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
 }
