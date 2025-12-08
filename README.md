@@ -36,7 +36,7 @@ Kanban-ready backlog with titles, descriptions, and acceptance criteria. Check i
 - [x] [BACKEND] Catalog Endpoints  
   Description: CRUD/read endpoints for products (list, single, categories/filters).  
   AC: GET products supports category/filter; GET by id works; errors validated.
-- [ ] [BACKEND] Menu Endpoints  
+- [x] [BACKEND] Menu Endpoints  
   Description: Endpoints to list menu sections/items with availability.  
   AC: GET menu returns sections/items with availability flags; validation on input.
 - [ ] [BACKEND] Order Endpoints  
