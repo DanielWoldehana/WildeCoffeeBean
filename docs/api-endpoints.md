@@ -10,7 +10,8 @@ Keep this file updated as endpoints are added. Group by category and list method
 - `GET /api/products/:id` — Fetch single product by id.
 
 ## Menu
-- _TBD_ — Add menu endpoints when implemented.
+- `GET /api/menu` — List menu items. Filters: `section`, `tags` (comma-separated), `available`, `active` (defaults to true), `search`.
+- `GET /api/menu/:id` — Fetch single menu item by id.
 
 ## Orders
 - _TBD_ — Add order create/status/webhook endpoints when implemented.
