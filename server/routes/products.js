@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import { Product } from "../models/index.js";
+import { errorResponse, validateQueryBoolean } from "../utils/validation.js";
 
 const router = express.Router();
 
@@ -8,17 +9,14 @@ const router = express.Router();
 // Supports filters: search (name/description), category, inStock, active
 router.get("/", async (req, res, next) => {
   try {
-    const { search, category, inStock, active } = req.query;
+    const { search, category } = req.query;
+    const inStock = validateQueryBoolean(req.query.inStock);
+    const active = validateQueryBoolean(req.query.active);
     const query = {};
 
-    if (active !== undefined) {
-      query.active = active === "true";
-    } else {
-      query.active = true;
-    }
-
+    query.active = active === undefined ? true : active;
     if (inStock !== undefined) {
-      query.inStock = inStock === "true";
+      query.inStock = inStock;
     }
 
     if (category) {
@@ -44,11 +42,11 @@ router.get("/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ error: "Invalid product id" });
+      return errorResponse(res, 400, "Invalid product id");
     }
     const product = await Product.findById(id).lean();
     if (!product) {
-      return res.status(404).json({ error: "Product not found" });
+      return errorResponse(res, 404, "Product not found");
     }
     res.json({ data: product });
   } catch (err) {

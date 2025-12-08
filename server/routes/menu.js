@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import { MenuItem } from "../models/index.js";
+import { errorResponse, validateQueryBoolean } from "../utils/validation.js";
 
 const router = express.Router();
 
@@ -8,17 +9,14 @@ const router = express.Router();
 // Filters: section, tags (comma-separated), available, active, search
 router.get("/", async (req, res, next) => {
   try {
-    const { section, tags, available, active, search } = req.query;
+    const { section, tags, search } = req.query;
+    const available = validateQueryBoolean(req.query.available);
+    const active = validateQueryBoolean(req.query.active);
     const query = {};
 
-    if (active !== undefined) {
-      query.active = active === "true";
-    } else {
-      query.active = true;
-    }
-
+    query.active = active === undefined ? true : active;
     if (available !== undefined) {
-      query.available = available === "true";
+      query.available = available;
     }
 
     if (section) {
@@ -48,11 +46,11 @@ router.get("/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ error: "Invalid menu item id" });
+      return errorResponse(res, 400, "Invalid menu item id");
     }
     const item = await MenuItem.findById(id).lean();
     if (!item) {
-      return res.status(404).json({ error: "Menu item not found" });
+      return errorResponse(res, 404, "Menu item not found");
     }
     res.json({ data: item });
   } catch (err) {
