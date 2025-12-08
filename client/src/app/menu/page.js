@@ -144,46 +144,52 @@ export default function MenuPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl">
-        {/* Header */}
-        <div className="mb-8 text-center">
-          <h1 className="mb-4 text-4xl font-bold text-[var(--coffee-brown)] sm:text-5xl">
-            Menu
-          </h1>
-          <p className="text-lg text-gray-600">
-            Explore our selection of beverages, pastries, and smoothies
-          </p>
-        </div>
-
-        {/* Section Filter */}
-        {sections.length > 0 && (
-          <div className="mb-8 flex flex-wrap justify-center gap-2">
-            <button
-              onClick={() => setSelectedSection("")}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                selectedSection === ""
-                  ? "bg-[var(--lime-green)] text-white"
-                  : "bg-white text-[var(--coffee-brown)] hover:bg-gray-100"
-              }`}
-            >
-              All Items
-            </button>
-            {sections.map((section) => (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header - Full Width */}
+      <div className="bg-[var(--coffee-brown-very-light)] py-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h1 className="mb-4 text-4xl font-bold text-[var(--coffee-brown)] sm:text-5xl">
+              Menu
+            </h1>
+            <p className="mb-6 text-lg text-gray-600">
+              Explore our selection of beverages, pastries, and smoothies
+            </p>
+          </div>
+          
+          {/* Section Filter */}
+          {sections.length > 0 && (
+            <div className="flex flex-wrap justify-center gap-2">
               <button
-                key={section}
-                onClick={() => setSelectedSection(section)}
+                onClick={() => setSelectedSection("")}
                 className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                  selectedSection === section
+                  selectedSection === ""
                     ? "bg-[var(--lime-green)] text-white"
                     : "bg-white text-[var(--coffee-brown)] hover:bg-gray-100"
                 }`}
               >
-                {section}
+                All Items
               </button>
-            ))}
-          </div>
-        )}
+              {sections.map((section) => (
+                <button
+                  key={section}
+                  onClick={() => setSelectedSection(section)}
+                  className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                    selectedSection === section
+                      ? "bg-[var(--lime-green)] text-white"
+                      : "bg-white text-[var(--coffee-brown)] hover:bg-gray-100"
+                  }`}
+                >
+                  {section}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="py-8 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
 
         {/* Menu Items by Section */}
         <div className="space-y-12">
@@ -576,6 +582,7 @@ export default function MenuPage() {
             </motion.div>
           )}
         </AnimatePresence>
+        </div>
       </div>
     </div>
   );

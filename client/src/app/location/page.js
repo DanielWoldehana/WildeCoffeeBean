@@ -152,13 +152,15 @@ export default function LocationPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-12">
-        <motion.header
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, ease: "easeOut" }}
-          className="space-y-3 text-center"
-        >
+      {/* Header - Full Width */}
+      <div className="bg-[var(--coffee-brown-very-light)] py-8">
+        <div className="mx-auto max-w-6xl px-6">
+          <motion.header
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, ease: "easeOut" }}
+            className="space-y-3 text-center"
+          >
           <p className="text-sm font-semibold uppercase tracking-wider text-[var(--lime-green)]">
             Visit Us
           </p>
@@ -168,8 +170,11 @@ export default function LocationPage() {
           <p className="mx-auto max-w-2xl text-lg text-gray-600">
             Find our shop, view hours, and see your distance if you share location.
           </p>
-        </motion.header>
+          </motion.header>
+        </div>
+      </div>
 
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-12">
         {loading && (
           <div className="flex items-center justify-center py-12">
             <div className="text-center">

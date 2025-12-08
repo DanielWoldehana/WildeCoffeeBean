@@ -4,6 +4,10 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import AddToCartButton from "@/components/AddToCartButton";
+import Modal from "@/components/Modal";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import ErrorDisplay from "@/components/ErrorDisplay";
 
 export default function ShopPage() {
   const [products, setProducts] = useState([]);
@@ -158,24 +162,17 @@ export default function ShopPage() {
   };
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[var(--lime-green)] border-r-transparent"></div>
-          <p className="text-[var(--coffee-brown)]">Loading products...</p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner message="Loading products..." className="min-h-screen" />;
   }
 
   if (error) {
     return (
       <div className="flex min-h-screen items-center justify-center px-4">
         <div className="text-center">
-          <p className="mb-4 text-lg text-red-600">Error: {error}</p>
+          <ErrorDisplay message={`Error: ${error}`} />
           <button
             onClick={() => window.location.reload()}
-            className="rounded-full bg-[var(--lime-green)] px-6 py-2 text-white hover:bg-[var(--lime-green-dark)]"
+            className="mt-4 rounded-full bg-[var(--lime-green)] px-6 py-2 text-white hover:bg-[var(--lime-green-dark)]"
           >
             Retry
           </button>
@@ -185,17 +182,23 @@ export default function ShopPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl">
-        {/* Header */}
-        <div className="mb-8 text-center">
-          <h1 className="mb-4 text-4xl font-bold text-[var(--coffee-brown)] sm:text-5xl">
-            Shop Coffee Beans
-          </h1>
-          <p className="text-lg text-gray-600">
-            Discover our selection of premium, fresh-roasted coffee beans
-          </p>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header - Full Width */}
+      <div className="bg-[var(--coffee-brown-very-light)] py-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h1 className="mb-4 text-4xl font-bold text-[var(--coffee-brown)] sm:text-5xl">
+              Shop Coffee Beans
+            </h1>
+            <p className="text-lg text-gray-600">
+              Discover our selection of premium, fresh-roasted coffee beans
+            </p>
+          </div>
         </div>
+      </div>
+
+      <div className="py-8 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
 
         {/* Filters and Sort */}
         <div className="mb-8 rounded-lg bg-white p-4 shadow-md">
@@ -353,80 +356,14 @@ export default function ShopPage() {
                         {formatPrice(product.price, product.currency)}
                       </span>
                       {product.inStock && (
-                        getCartQuantity(product._id) > 0 ? (
-                          <div className="flex items-center justify-between rounded-full border-2 border-[var(--coffee-brown-medium-light)] bg-[var(--coffee-brown-medium-light)]">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                updateCartQuantity(product, -1);
-                              }}
-                              className="flex h-10 w-10 items-center justify-center rounded-l-full text-[var(--coffee-brown)] transition-colors hover:bg-[var(--coffee-brown-light)] hover:text-white"
-                              aria-label="Decrease quantity"
-                            >
-                              <svg
-                                className="h-5 w-5"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M20 12H4"
-                                />
-                              </svg>
-                            </button>
-                            <span className="flex flex-1 items-center justify-center gap-1.5 px-4 text-sm font-semibold text-[var(--coffee-brown)]">
-                              <span>{getCartQuantity(product._id)}</span>
-                              <svg
-                                className="h-4 w-4"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                                />
-                              </svg>
-                            </span>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                updateCartQuantity(product, 1);
-                              }}
-                              className="flex h-10 w-10 items-center justify-center rounded-r-full text-[var(--coffee-brown)] transition-colors hover:bg-[var(--coffee-brown-light)] hover:text-white"
-                              aria-label="Increase quantity"
-                            >
-                              <svg
-                                className="h-5 w-5"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M12 4v16m8-8H4"
-                                />
-                              </svg>
-                            </button>
-                          </div>
-                        ) : (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              addToCart(product);
-                            }}
-                            className="rounded-full bg-[var(--lime-green)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--lime-green-dark)]"
-                          >
-                            Add to Cart
-                          </button>
-                        )
+                        <AddToCartButton
+                          item={product}
+                          quantity={getCartQuantity(product._id)}
+                          onAdd={addToCart}
+                          onIncrease={(item) => updateCartQuantity(item, 1)}
+                          onDecrease={(item) => updateCartQuantity(item, -1)}
+                          stopPropagation={true}
+                        />
                       )}
                     </div>
                   </div>
@@ -437,23 +374,9 @@ export default function ShopPage() {
         )}
 
         {/* Product Detail Modal */}
-        <AnimatePresence>
-          {isModalOpen && selectedProduct && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-              onClick={closeProductModal}
-            >
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                onClick={(e) => e.stopPropagation()}
-                className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white shadow-2xl"
-              >
-                <div className="relative h-64 w-full bg-gray-200 sm:h-80">
+        {isModalOpen && selectedProduct && (
+          <Modal isOpen={isModalOpen} onClose={closeProductModal}>
+            <div className="relative h-64 w-full bg-gray-200 sm:h-80">
                   {selectedProduct.images &&
                   selectedProduct.images.length > 0 &&
                   !imageErrors.has(selectedProduct._id) ? (
@@ -577,81 +500,22 @@ export default function ShopPage() {
                       )}
                     </div>
                     {selectedProduct.inStock && (
-                      getCartQuantity(selectedProduct._id) > 0 ? (
-                        <div className="flex items-center justify-between rounded-full border-2 border-[var(--coffee-brown-medium-light)] bg-[var(--coffee-brown-medium-light)]">
-                          <button
-                            onClick={() => updateCartQuantity(selectedProduct, -1)}
-                            className="flex h-12 w-12 items-center justify-center rounded-l-full text-[var(--coffee-brown)] transition-colors hover:bg-[var(--coffee-brown-light)] hover:text-white"
-                            aria-label="Decrease quantity"
-                          >
-                            <svg
-                              className="h-6 w-6"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M20 12H4"
-                              />
-                            </svg>
-                          </button>
-                          <span className="flex flex-1 items-center justify-center gap-2 px-4 text-base font-semibold text-[var(--coffee-brown)]">
-                            <span>{getCartQuantity(selectedProduct._id)}</span>
-                            <svg
-                              className="h-5 w-5"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                              />
-                            </svg>
-                          </span>
-                          <button
-                            onClick={() => updateCartQuantity(selectedProduct, 1)}
-                            className="flex h-12 w-12 items-center justify-center rounded-r-full text-[var(--coffee-brown)] transition-colors hover:bg-[var(--coffee-brown-light)] hover:text-white"
-                            aria-label="Increase quantity"
-                          >
-                            <svg
-                              className="h-6 w-6"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M12 4v16m8-8H4"
-                              />
-                            </svg>
-                          </button>
-                        </div>
-                      ) : (
-                        <button
-                          onClick={() => addToCart(selectedProduct)}
-                          className="rounded-full bg-[var(--lime-green)] px-8 py-3 text-lg font-semibold text-white transition-colors hover:bg-[var(--lime-green-dark)]"
-                        >
-                          Add to Cart
-                        </button>
-                      )
+                      <AddToCartButton
+                        item={selectedProduct}
+                        quantity={getCartQuantity(selectedProduct._id)}
+                        onAdd={addToCart}
+                        onIncrease={(item) => updateCartQuantity(item, 1)}
+                        onDecrease={(item) => updateCartQuantity(item, -1)}
+                        className="px-8 py-3 text-lg"
+                      />
                     )}
                   </div>
                   <p className="mt-4 text-center text-sm text-gray-500">
                     Available for in-store pickup
                   </p>
                 </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+          </Modal>
+        )}
 
         {/* Cart Summary (sticky at bottom) */}
         {cart.length > 0 && (
@@ -682,6 +546,7 @@ export default function ShopPage() {
             </div>
           </div>
         )}
+        </div>
       </div>
     </div>
   );
