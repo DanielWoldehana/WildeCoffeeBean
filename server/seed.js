@@ -9,29 +9,31 @@ const mongoUri = process.env.MONGODB_URI;
 const products = [
   {
     name: "Ethiopia Yirgacheffe",
-    description: "Floral, citrus, and tea-like with bright acidity.",
+    description:
+      "Floral, citrus, and tea-like with bright acidity. A classic Ethiopian coffee with delicate notes.",
     price: 16.5,
     currency: "USD",
     roastLevel: "Light",
     origin: "Ethiopia",
-    flavorNotes: ["Bergamot", "Jasmine", "Lemon"],
+    flavorNotes: ["Bergamot", "Jasmine", "Lemon", "Tea-like"],
     inStock: true,
     inventory: 40,
-    images: [],
+    images: ["/images/products/single-origin/ethiopia-yirgacheffe.jpeg"],
     categories: ["single-origin", "light-roast"],
     active: true,
   },
   {
-    name: "Colombia Huila",
-    description: "Balanced sweetness with chocolate and red fruit notes.",
-    price: 15,
+    name: "Ethiopia Sedamo",
+    description:
+      "Rich and full-bodied with wine-like acidity and fruity notes. A distinctive Ethiopian coffee.",
+    price: 17.0,
     currency: "USD",
     roastLevel: "Medium",
-    origin: "Colombia",
-    flavorNotes: ["Milk Chocolate", "Red Apple", "Caramel"],
+    origin: "Ethiopia",
+    flavorNotes: ["Wine", "Berry", "Citrus", "Floral"],
     inStock: true,
-    inventory: 60,
-    images: [],
+    inventory: 35,
+    images: ["/images/products/single-origin/ethiopia-sedamo.jpeg"],
     categories: ["single-origin", "medium-roast"],
     active: true,
   },
@@ -100,7 +102,8 @@ const menuItems = [
   },
   {
     name: "Overnight Oats (Chilled)",
-    description: "Pre-packaged oats with berries and almond milk, refrigerated.",
+    description:
+      "Pre-packaged oats with berries and almond milk, refrigerated.",
     price: 6.0,
     currency: "USD",
     section: "Breakfast (Grab & Go)",
@@ -173,4 +176,3 @@ seed().catch((err) => {
   console.error("Seeding failed:", err);
   process.exit(1);
 });
-
