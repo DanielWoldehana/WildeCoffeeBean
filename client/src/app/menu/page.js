@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function MenuPage() {
   const [menuItems, setMenuItems] = useState([]);
@@ -137,48 +138,67 @@ export default function MenuPage() {
               </h2>
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {items.map((item) => (
-                  <div
+                  <motion.div
                     key={item._id}
-                    className="rounded-lg border border-gray-200 p-4 transition-all hover:border-[var(--lime-green)] hover:shadow-md"
+                    whileHover={{ y: -4 }}
+                    className="group overflow-hidden rounded-lg border border-gray-200 bg-white transition-all hover:border-[var(--lime-green)] hover:shadow-lg"
                   >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <h3 className="mb-1 text-lg font-semibold text-[var(--lime-green)]">
-                          {item.name}
-                        </h3>
-                        <p className="mb-3 text-sm text-gray-600">
-                          {item.description}
-                        </p>
-                        {item.allergens && item.allergens.length > 0 && (
-                          <div className="mb-2">
-                            <p className="mb-1 text-xs font-semibold text-amber-700">
-                              Contains:
-                            </p>
-                            <div className="flex flex-wrap gap-1">
-                              {item.allergens.map((allergen, idx) => (
-                                <span
-                                  key={idx}
-                                  className="rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-800 border border-amber-200"
-                                >
-                                  {allergen}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        )}
+                    {/* Image Section */}
+                    {item.image && (
+                      <div className="relative h-48 w-full overflow-hidden bg-gray-100">
+                        <Image
+                          src={item.image}
+                          alt={item.name}
+                          fill
+                          className="object-cover transition-transform duration-300 group-hover:scale-110"
+                          unoptimized
+                        />
                       </div>
-                      <div className="ml-4 text-right">
-                        <p className="text-xl font-bold text-[var(--coffee-brown)]">
-                          {formatPrice(item.price, item.currency)}
-                        </p>
-                        {!item.available && (
-                          <p className="mt-1 text-xs text-red-600">
-                            Unavailable
+                    )}
+                    
+                    {/* Content Section */}
+                    <div className="p-4">
+                      <div className="mb-3 flex items-start justify-between">
+                        <div className="flex-1">
+                          <h3 className="mb-1 text-lg font-semibold text-[var(--lime-green)]">
+                            {item.name}
+                          </h3>
+                          <p className="text-sm text-gray-600">
+                            {item.description}
                           </p>
-                        )}
+                        </div>
+                        <div className="ml-4 text-right">
+                          <p className="text-xl font-bold text-[var(--coffee-brown)]">
+                            {formatPrice(item.price, item.currency)}
+                          </p>
+                        </div>
                       </div>
+                      
+                      {item.allergens && item.allergens.length > 0 && (
+                        <div className="mb-2 border-t border-gray-100 pt-2">
+                          <p className="mb-1 text-xs font-semibold text-amber-700">
+                            Contains:
+                          </p>
+                          <div className="flex flex-wrap gap-1">
+                            {item.allergens.map((allergen, idx) => (
+                              <span
+                                key={idx}
+                                className="rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-800 border border-amber-200"
+                              >
+                                {allergen}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {!item.available && (
+                        <p className="mt-2 text-xs text-red-600">
+                          Currently Unavailable
+                        </p>
+                      )}
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </motion.div>
