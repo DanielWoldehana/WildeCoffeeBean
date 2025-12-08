@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { locationApi, ordersApi } from "@/lib/api";
 
 export default function OrderPage() {
   const router = useRouter();
@@ -43,26 +44,22 @@ export default function OrderPage() {
     // Fetch store hours from API (single source of truth)
     const fetchStoreHours = async () => {
       try {
-        const response = await fetch("/api/location");
-        if (response.ok) {
-          const result = await response.json();
-          const location = result.data;
-          if (location?.hours && location.hours.length > 0) {
-            // Get hours for today (or use first day as default)
-            const today = new Date();
-            const dayName = today.toLocaleDateString("en-US", { weekday: "long" });
-            const todayHours = location.hours.find((h) => h.day === dayName) || location.hours[0];
+        const location = await locationApi.getLocation();
+        if (location?.hours && location.hours.length > 0) {
+          // Get hours for today (or use first day as default)
+          const today = new Date();
+          const dayName = today.toLocaleDateString("en-US", { weekday: "long" });
+          const todayHours = location.hours.find((h) => h.day === dayName) || location.hours[0];
+          
+          if (todayHours && !todayHours.closed) {
+            // Parse opening and closing times (format: "HH:mm")
+            const openTime = todayHours.opens?.split(":") || ["07", "00"];
+            const closeTime = todayHours.closes?.split(":") || ["20", "00"];
             
-            if (todayHours && !todayHours.closed) {
-              // Parse opening and closing times (format: "HH:mm")
-              const openTime = todayHours.opens?.split(":") || ["07", "00"];
-              const closeTime = todayHours.closes?.split(":") || ["20", "00"];
-              
-              setStoreHours({
-                open: parseInt(openTime[0], 10),
-                close: parseInt(closeTime[0], 10),
-              });
-            }
+            setStoreHours({
+              open: parseInt(openTime[0], 10),
+              close: parseInt(closeTime[0], 10),
+            });
           }
         }
       } catch (err) {
@@ -383,21 +380,8 @@ export default function OrderPage() {
         paymentStatus: "pending", // Will be updated after payment processing
       };
 
-      const response = await fetch("/api/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(orderData),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to place order");
-      }
-
-      const result = await response.json();
-      setOrderId(result.data._id);
+      const result = await ordersApi.create(orderData);
+      setOrderId(result._id);
       setOrderPlaced(true);
       
       // Clear cart

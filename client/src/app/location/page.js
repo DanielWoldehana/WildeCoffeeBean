@@ -4,18 +4,13 @@ import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useLocation } from "@/hooks/useLocation";
+import { locationApi } from "@/lib/api";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import ErrorDisplay from "@/components/ErrorDisplay";
 
 const Map = dynamic(() => import("pigeon-maps").then((m) => m.Map), { ssr: false });
 const Marker = dynamic(() => import("pigeon-maps").then((m) => m.Marker), { ssr: false });
-
-const fetchJson = async (url, options) => {
-  const res = await fetch(url, options);
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw new Error(body.error || `Request failed: ${res.status}`);
-  }
-  return res.json();
-};
 
 // Convert 24-hour format (HH:mm) to 12-hour format (h:mm AM/PM)
 const formatTime12Hour = (time24) => {
@@ -28,28 +23,15 @@ const formatTime12Hour = (time24) => {
 };
 
 export default function LocationPage() {
-  const [store, setStore] = useState(null);
   const [userCoords, setUserCoords] = useState(null);
   const [distance, setDistance] = useState(null);
   const [geoError, setGeoError] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [distanceLoading, setDistanceLoading] = useState(false);
   const [mapCenter, setMapCenter] = useState(null);
   const [mapZoom, setMapZoom] = useState(14);
 
-  useEffect(() => {
-    const loadLocation = async () => {
-      try {
-        const { data } = await fetchJson("/api/location");
-        setStore(data);
-      } catch (err) {
-        setGeoError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadLocation();
-  }, []);
+  // Fetch location using custom hook
+  const { location: store, loading, error } = useLocation();
 
   // Calculate map bounds to fit both store and user location
   const calculateMapBounds = (storeCoords, userCoords) => {
@@ -107,12 +89,9 @@ export default function LocationPage() {
           }
           
           setDistanceLoading(true);
-          fetchJson("/api/location/distance", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(coords),
-          })
-            .then((res) => setDistance(res.data.distance))
+          locationApi
+            .calculateDistance(coords)
+            .then((distanceData) => setDistance(distanceData))
             .catch((err) => setGeoError(err.message))
             .finally(() => setDistanceLoading(false));
         }
@@ -175,18 +154,10 @@ export default function LocationPage() {
       </div>
 
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-12">
-        {loading && (
-          <div className="flex items-center justify-center py-12">
-            <div className="text-center">
-              <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[var(--lime-green)] border-r-transparent"></div>
-              <p className="text-[var(--coffee-brown)]">Loading location...</p>
-            </div>
-          </div>
-        )}
-        {!loading && !store && (
-          <div className="rounded-lg bg-red-50 border border-red-200 p-4 text-center">
-            <p className="text-red-600">No location available.</p>
-          </div>
+        {loading && <LoadingSpinner message="Loading location..." />}
+        {!loading && error && <ErrorDisplay message={error} />}
+        {!loading && !error && !store && (
+          <ErrorDisplay message="No location available." />
         )}
 
         {store && (

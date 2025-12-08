@@ -97,8 +97,8 @@ See `docs/api-endpoints.md` for complete API documentation.
 ### 📋 Pending
 
 #### Frontend
-- ⏳ **[FRONTEND] Reusable Components** - Extract shared components (buttons, cards, modals, quantity controls)
-- ⏳ **[FRONTEND] API Client Hooks/Services** - Centralize API calls with custom hooks/services
+- ✅ **[FRONTEND] Reusable Components** - Extract shared components (buttons, cards, modals, quantity controls)
+- ✅ **[FRONTEND] API Client Hooks/Services** - Centralize API calls with custom hooks/services
 
 #### Authentication
 - ⏳ **[AUTH] Auth Decision & Scope** - Decide if user authentication is needed (accounts, order history, etc.)
