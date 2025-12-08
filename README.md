@@ -77,7 +77,7 @@ Kanban-ready backlog with titles, descriptions, and acceptance criteria. Check i
   AC: Map shows store pin; if permission granted, user pin appears; fallback UI when blocked.
 
 ## Frontend (Next.js + Tailwind)
-- [ ] [FRONTEND] Theme & Layout  
+- [x] [FRONTEND] Theme & Layout  
   Description: Set modern design system (colors/typography), global layout, nav/footer.  
   AC: Shared layout applied sitewide; nav/footer responsive; design tokens defined.
 - [ ] [FRONTEND] Animated Home Page  
