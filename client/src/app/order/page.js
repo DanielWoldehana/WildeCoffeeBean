@@ -28,13 +28,10 @@ export default function OrderPage() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [notes, setNotes] = useState("");
+  const [storeHours, setStoreHours] = useState({ open: 7, close: 20 }); // Default fallback
 
   // Tax rate (8.75% - adjust as needed)
   const taxRate = 0.0875;
-
-  // Store hours: 7am - 8pm
-  const STORE_OPEN_HOUR = 7;
-  const STORE_CLOSE_HOUR = 20; // 8pm in 24-hour format
 
   useEffect(() => {
     // Load cart from localStorage or state
@@ -42,6 +39,39 @@ export default function OrderPage() {
     if (savedCart) {
       setCart(JSON.parse(savedCart));
     }
+
+    // Fetch store hours from API (single source of truth)
+    const fetchStoreHours = async () => {
+      try {
+        const response = await fetch("/api/location");
+        if (response.ok) {
+          const result = await response.json();
+          const location = result.data;
+          if (location?.hours && location.hours.length > 0) {
+            // Get hours for today (or use first day as default)
+            const today = new Date();
+            const dayName = today.toLocaleDateString("en-US", { weekday: "long" });
+            const todayHours = location.hours.find((h) => h.day === dayName) || location.hours[0];
+            
+            if (todayHours && !todayHours.closed) {
+              // Parse opening and closing times (format: "HH:mm")
+              const openTime = todayHours.opens?.split(":") || ["07", "00"];
+              const closeTime = todayHours.closes?.split(":") || ["20", "00"];
+              
+              setStoreHours({
+                open: parseInt(openTime[0], 10),
+                close: parseInt(closeTime[0], 10),
+              });
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch store hours:", err);
+        // Keep default fallback values
+      }
+    };
+
+    fetchStoreHours();
   }, []);
 
   // Calculate the first available time slot for today
@@ -60,14 +90,14 @@ export default function OrderPage() {
       firstMinute = 0;
     }
 
-    // If before 7:15am, start at 7:00am
-    if (firstHour < STORE_OPEN_HOUR || (firstHour === STORE_OPEN_HOUR && firstMinute < 15)) {
-      firstHour = STORE_OPEN_HOUR;
+    // If before store open time + 15 minutes, start at store open time
+    if (firstHour < storeHours.open || (firstHour === storeHours.open && firstMinute < 15)) {
+      firstHour = storeHours.open;
       firstMinute = 0;
     }
 
-    // If after 8pm, no slots available for today
-    if (firstHour >= STORE_CLOSE_HOUR) {
+    // If after store close time, no slots available for today
+    if (firstHour >= storeHours.close) {
       return null;
     }
 
@@ -88,7 +118,7 @@ export default function OrderPage() {
       let hour = firstTime.hour;
       let minute = firstTime.minute;
 
-      while (hour < STORE_CLOSE_HOUR) {
+      while (hour < storeHours.close) {
         const timeString = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
         const displayTime = formatTimeDisplay(hour, minute);
         slots.push({ value: timeString, display: displayTime });
@@ -100,11 +130,11 @@ export default function OrderPage() {
         }
       }
     } else {
-      // For future dates, start at 7:00am
-      let hour = STORE_OPEN_HOUR;
+      // For future dates, start at store open time
+      let hour = storeHours.open;
       let minute = 0;
 
-      while (hour < STORE_CLOSE_HOUR) {
+      while (hour < storeHours.close) {
         const timeString = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
         const displayTime = formatTimeDisplay(hour, minute);
         slots.push({ value: timeString, display: displayTime });
