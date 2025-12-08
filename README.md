@@ -1,4 +1,4 @@
-# Wild Coffee Bean Project Tasks
+# Wild Bean Coffee Project Tasks
 
 ## Structure & Quickstart
 - Client (Next.js): `cd client && npm install && npm run dev` (default http://localhost:3000)
@@ -80,7 +80,7 @@ Kanban-ready backlog with titles, descriptions, and acceptance criteria. Check i
 - [x] [FRONTEND] Theme & Layout  
   Description: Set modern design system (colors/typography), global layout, nav/footer.  
   AC: Shared layout applied sitewide; nav/footer responsive; design tokens defined.
-- [ ] [FRONTEND] Animated Home Page  
+- [x] [FRONTEND] Animated Home Page  
   Description: Build animated hero/sections (e.g., Framer Motion) with CTA to shop/order.  
   AC: Hero animates on load/scroll; CTA routes to shop/order; mobile-friendly.
 - [ ] [FRONTEND] Shop Page  
