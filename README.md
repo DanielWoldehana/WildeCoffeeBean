@@ -6,6 +6,8 @@
 - Folders: `client/` for the Next.js app, `server/` for the Express API scaffold.
 - Tasks below track backlog progress; tick `[ ]` to `[x]` as you complete items.
 - Env samples: copy `client/env.example` → `client/.env.local` (or `.env`) and `server/env.example` → `server/.env` and adjust values.
+- Tooling: server dev uses `nodemon`; client lint via `npm run lint`; format via `npm run format`.
+- Env samples: copy `client/env.example` → `client/.env.local` (or `.env`) and `server/env.example` → `server/.env` and adjust values.
 
 Kanban-ready backlog with titles, descriptions, and acceptance criteria. Check items as you complete them.
 
@@ -16,7 +18,7 @@ Kanban-ready backlog with titles, descriptions, and acceptance criteria. Check i
 - [x] [Foundation] Env & Secrets Setup  
   Description: Add `.env` handling for client/server and sample env files.  
   AC: `.env.example` exists; apps load env vars via dotenv/next config; secrets ignored by git.
-- [ ] [Foundation] Dev Tooling & Scripts  
+- [x] [Foundation] Dev Tooling & Scripts  
   Description: Add nodemon for API, lint/format scripts, Next proxy/rewrites for API.  
   AC: `npm run dev` works for both apps; API auto-reloads; lint/format scripts succeed.
 
