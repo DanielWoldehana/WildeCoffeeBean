@@ -28,15 +28,16 @@ export default function Nav() {
   return (
     <nav className="sticky top-0 z-50 bg-white shadow-md">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
+        <div className="flex h-16 items-center justify-between overflow-visible">
+          <Link href="/" className="flex items-center gap-2 overflow-visible">
             <Image
-              src="/images/logo/logo.jpeg"
+              src="/images/logo/logoWtext.png"
               alt="Wild Bean Coffee"
-              width={120}
-              height={40}
-              className="h-auto w-auto"
+              width={400}
+              height={128}
+              className="h-32 w-auto"
               priority
+              unoptimized
             />
           </Link>
           <div className="hidden md:flex md:items-center md:gap-6">

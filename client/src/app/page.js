@@ -1,16 +1,94 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
+import Image from "next/image";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
   const [isVisible, setIsVisible] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [prevSlide, setPrevSlide] = useState(0);
+  const [direction, setDirection] = useState(1);
   const heroRef = useRef(null);
 
+  const slides = [
+    {
+      id: 1,
+      title: "Wild Bean Coffee",
+      subtitle: "Fresh Roasted Coffee & Handcrafted Beverages",
+      description: "Experience the perfect blend of quality beans and artisanal craftsmanship.",
+      cta: "Shop Coffee Beans",
+      ctaLink: "/shop",
+      cta2: "Order Online",
+      cta2Link: "/order",
+      bgImage: "/images/menu/Coffee/Latte.jpg",
+    },
+    {
+      id: 2,
+      title: "Premium Coffee Beans",
+      subtitle: "Ethically Sourced & Freshly Roasted",
+      description: "Discover our selection of single-origin and specialty coffee beans from around the world.",
+      cta: "Browse Shop",
+      ctaLink: "/shop",
+      cta2: "View Menu",
+      cta2Link: "/menu",
+      bgImage: "/images/menu/Coffee/Cappuccino.jpg",
+    },
+    {
+      id: 3,
+      title: "Handcrafted Beverages",
+      subtitle: "Made with Care & Passion",
+      description: "From classic espresso to refreshing smoothies, every drink is crafted to perfection.",
+      cta: "View Menu",
+      ctaLink: "/menu",
+      cta2: "Order Now",
+      cta2Link: "/order",
+      bgImage: "/images/menu/Smoothies/TropicalBliss.jpeg",
+    },
+    {
+      id: 4,
+      title: "Visit Our Cafe",
+      subtitle: "Experience the Atmosphere",
+      description: "Come visit us at 1532 Rockville Pike for an unforgettable coffee experience.",
+      cta: "Get Directions",
+      ctaLink: "/location",
+      cta2: "Order Online",
+      cta2Link: "/order",
+      bgImage: "/images/menu/Coffee/Mocha.png",
+    },
+  ];
+
+  // Initialize visibility
   useEffect(() => {
     setIsVisible(true);
   }, []);
+
+  const goToSlide = (index, slideDirection) => {
+    setPrevSlide(currentSlide);
+    setDirection(slideDirection); // 1 for right-to-left, -1 for left-to-right
+    setCurrentSlide(index);
+  };
+
+  const slideVariants = {
+    enter: (direction) => ({
+      x: direction > 0 ? "100%" : "-100%", // Enter from right if direction > 0, from left if < 0
+      opacity: 1,
+    }),
+    center: {
+      x: "0%", // Center position
+      opacity: 1,
+    },
+    exit: (direction) => ({
+      x: direction > 0 ? "-100%" : "100%", // Exit to left if direction > 0, to right if < 0
+      opacity: 1,
+    }),
+  };
+
+  const slideTransition = {
+    x: { type: "tween", duration: 0.8, ease: "easeInOut" },
+    opacity: { duration: 0.8 },
+  };
 
   const fadeInUp = {
     initial: { opacity: 0, y: 30 },
@@ -30,71 +108,181 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero Section */}
+      {/* Advanced Carousel Hero Section */}
       <section
         ref={heroRef}
-        className="relative flex min-h-[90vh] items-center justify-center overflow-hidden bg-gradient-to-br from-[var(--coffee-brown-dark)] via-[var(--coffee-brown)] to-[var(--coffee-brown-light)] px-4 py-20 sm:px-6 lg:px-8"
+        className="relative flex min-h-[90vh] items-center justify-center overflow-hidden px-4 py-20 sm:px-6 lg:px-8"
       >
-        {/* Background decorative elements */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute left-1/4 top-1/4 h-64 w-64 rounded-full bg-[var(--lime-green)] blur-3xl"></div>
-          <div className="absolute right-1/4 bottom-1/4 h-96 w-96 rounded-full bg-[var(--lime-green-light)] blur-3xl"></div>
+        <AnimatePresence initial={false} custom={direction}>
+          {slides.map((slide, index) => {
+            const isActive = index === currentSlide;
+            const isPrev = index === prevSlide && prevSlide !== currentSlide;
+            
+            // Only render current slide and previous slide during transition
+            if (!isActive && !isPrev) return null;
+            
+            return (
+              <motion.div
+                key={slide.id}
+                custom={direction}
+                variants={slideVariants}
+                initial={isActive ? "enter" : "center"}
+                animate={isActive ? "center" : "exit"}
+                exit="exit"
+                transition={slideTransition}
+                className="absolute inset-0 flex items-center justify-center"
+                style={{ willChange: "transform" }}
+              >
+                {/* Background Image with Modern Styling */}
+                <div className="absolute inset-0">
+                  <Image
+                    src={slide.bgImage}
+                    alt={slide.title}
+                    fill
+                    className="object-cover transition-transform duration-700 ease-out"
+                    unoptimized
+                    priority={currentSlide === 0}
+                  />
+                  {/* Modern overlay gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-[var(--coffee-brown-dark)]/85 via-[var(--coffee-brown)]/75 to-[var(--coffee-brown-light)]/85"></div>
+                  {/* Subtle vignette effect */}
+                  <div 
+                    className="absolute inset-0"
+                    style={{
+                      background: 'radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.3) 100%)'
+                    }}
+                  ></div>
+                </div>
+
+                <div className="relative z-10 mx-auto max-w-4xl text-center">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2, duration: 0.6 }}
+                  >
+                    <motion.h1
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.3, duration: 0.6, type: "spring" }}
+                      className="mb-6 text-5xl font-bold leading-tight text-white sm:text-6xl md:text-7xl lg:text-8xl"
+                    >
+                      {slide.title}
+                    </motion.h1>
+                    <motion.p
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.4, duration: 0.6 }}
+                      className="mb-8 text-xl text-white/90 sm:text-2xl md:text-3xl"
+                    >
+                      {slide.subtitle}
+                    </motion.p>
+                    <motion.p
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.5, duration: 0.6 }}
+                      className="mx-auto mb-12 max-w-2xl text-lg text-white/80 sm:text-xl"
+                    >
+                      {slide.description}
+                    </motion.p>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.6, duration: 0.6 }}
+                      className="flex flex-col items-center justify-center gap-4 sm:flex-row"
+                    >
+                      <Link
+                        href={slide.ctaLink}
+                        className="group relative overflow-hidden rounded-full bg-[var(--lime-green)] px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:bg-[var(--lime-green-dark)] hover:scale-105 hover:shadow-lg"
+                      >
+                        <span className="relative z-10">{slide.cta}</span>
+                        <div className="absolute inset-0 -translate-x-full bg-white/20 transition-transform duration-300 group-hover:translate-x-0"></div>
+                      </Link>
+                      <Link
+                        href={slide.cta2Link}
+                        className="rounded-full border-2 border-white bg-transparent px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:bg-white hover:text-[var(--coffee-brown)] hover:scale-105"
+                      >
+                        {slide.cta2}
+                      </Link>
+                    </motion.div>
+                  </motion.div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
+
+        {/* Carousel Navigation Dots */}
+        <div className="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 gap-2">
+          {slides.map((slide, index) => (
+            <button
+              key={slide.id}
+              onClick={() => {
+                // Determine direction based on whether clicking forward or backward
+                const slideDirection = index > currentSlide ? 1 : -1;
+                goToSlide(index, slideDirection);
+              }}
+              className={`h-3 w-3 rounded-full transition-all duration-300 ${
+                index === currentSlide
+                  ? "w-8 bg-white"
+                  : "bg-white/50 hover:bg-white/75"
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
         </div>
 
-        <div className="relative z-10 mx-auto max-w-4xl text-center">
-          {isVisible && (
-            <motion.div
-              initial="initial"
-              animate="animate"
-              variants={staggerChildren}
-            >
-              <motion.h1
-                variants={fadeInUp}
-                className="mb-6 text-5xl font-bold leading-tight text-white sm:text-6xl md:text-7xl lg:text-8xl"
-              >
-                Wild Bean Coffee
-              </motion.h1>
-              <motion.p
-                variants={fadeInUp}
-                className="mb-8 text-xl text-white/90 sm:text-2xl md:text-3xl"
-              >
-                Fresh Roasted Coffee & Handcrafted Beverages
-              </motion.p>
-              <motion.p
-                variants={fadeInUp}
-                className="mx-auto mb-12 max-w-2xl text-lg text-white/80 sm:text-xl"
-              >
-                Experience the perfect blend of quality beans and artisanal
-                craftsmanship. Order online for pickup or visit us in store.
-              </motion.p>
-              <motion.div
-                variants={fadeInUp}
-                className="flex flex-col items-center justify-center gap-4 sm:flex-row"
-              >
-                <Link
-                  href="/shop"
-                  className="group relative overflow-hidden rounded-full bg-[var(--lime-green)] px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:bg-[var(--lime-green-dark)] hover:scale-105 hover:shadow-lg"
-                >
-                  <span className="relative z-10">Shop Coffee Beans</span>
-                  <div className="absolute inset-0 -translate-x-full bg-white/20 transition-transform duration-300 group-hover:translate-x-0"></div>
-                </Link>
-                <Link
-                  href="/order"
-                  className="rounded-full border-2 border-white bg-transparent px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:bg-white hover:text-[var(--coffee-brown)] hover:scale-105"
-                >
-                  Order Online
-                </Link>
-              </motion.div>
-            </motion.div>
-          )}
-        </div>
+        {/* Navigation Arrows */}
+        <button
+          onClick={() => {
+            const prev = (currentSlide - 1 + slides.length) % slides.length;
+            goToSlide(prev, -1); // Left arrow: slide left-to-right (direction -1)
+          }}
+          className="absolute left-4 bottom-24 z-20 md:top-1/2 md:-translate-y-1/2 md:bottom-auto rounded-full bg-white/20 p-3 backdrop-blur-sm transition-all hover:bg-white/30 hover:scale-110"
+          aria-label="Previous slide"
+        >
+          <svg
+            className="h-6 w-6 text-white"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+        </button>
+        <button
+          onClick={() => {
+            const next = (currentSlide + 1) % slides.length;
+            goToSlide(next, 1); // Right arrow: slide right-to-left (direction 1)
+          }}
+          className="absolute right-4 bottom-24 z-20 md:top-1/2 md:-translate-y-1/2 md:bottom-auto rounded-full bg-white/20 p-3 backdrop-blur-sm transition-all hover:bg-white/30 hover:scale-110"
+          aria-label="Next slide"
+        >
+          <svg
+            className="h-6 w-6 text-white"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </button>
 
         {/* Scroll indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5, duration: 0.5 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+          className="absolute bottom-20 left-1/2 z-20 -translate-x-1/2"
         >
           <motion.div
             animate={{ y: [0, 10, 0] }}
@@ -119,21 +307,38 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl">
+      <section className="relative py-20 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl overflow-visible">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 50, scale: 0.95 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.6 }}
+            transition={{ 
+              duration: 0.8, 
+              ease: [0.16, 1, 0.3, 1],
+              type: "spring",
+              stiffness: 100
+            }}
             className="mb-16 text-center"
           >
-            <h2 className="mb-4 text-4xl font-bold text-[var(--coffee-brown)] sm:text-5xl">
+            <motion.h2 
+              className="mb-4 text-4xl font-bold text-[var(--coffee-brown)] sm:text-5xl"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+            >
               Why Choose Wild Bean Coffee?
-            </h2>
-            <p className="mx-auto max-w-2xl text-lg text-gray-600">
+            </motion.h2>
+            <motion.p 
+              className="mx-auto max-w-2xl text-lg text-gray-600"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+            >
               We're passionate about bringing you the finest coffee experience
-            </p>
+            </motion.p>
           </motion.div>
 
           <div className="grid gap-8 md:grid-cols-3">
@@ -143,35 +348,71 @@ export default function Home() {
                 title: "Fresh Roasted",
                 description:
                   "Our beans are roasted in-house daily to ensure maximum flavor and freshness.",
+                enterFrom: "left", // From left side of screen
               },
               {
                 icon: "🌱",
                 title: "Sustainably Sourced",
                 description:
                   "We partner with ethical farms committed to sustainable practices.",
+                enterFrom: "bottom", // From bottom of screen
               },
               {
                 icon: "👨‍🍳",
                 title: "Handcrafted",
                 description:
                   "Every beverage is carefully prepared by our skilled baristas.",
+                enterFrom: "right", // From right side of screen
               },
-            ].map((feature, index) => (
-              <motion.div
+            ].map((feature, index) => {
+              // Set initial position based on direction - subtle animation that works on all screens
+              const getInitialPosition = () => {
+                switch (feature.enterFrom) {
+                  case "left":
+                    return { x: -30, y: 0, opacity: 0 };
+                  case "right":
+                    return { x: 30, y: 0, opacity: 0 };
+                  case "bottom":
+                    return { x: 0, y: 30, opacity: 0 };
+                  default:
+                    return { x: 0, y: 0, opacity: 0 };
+                }
+              };
+
+              const initialPos = getInitialPosition();
+
+              return (
+                <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="rounded-2xl bg-gradient-to-br from-white to-gray-50 p-8 text-center shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
+                initial={initialPos}
+                whileInView={{ 
+                  opacity: 1, 
+                  y: 0,
+                  x: 0,
+                }}
+                viewport={{ once: true, margin: "0px" }}
+                transition={{ 
+                  duration: 0.9, 
+                  delay: index * 0.15,
+                  ease: "easeOut"
+                }}
+                className="rounded-xl border-2 border-gray-200 bg-white p-6 text-center shadow-md transition-shadow hover:shadow-lg"
               >
-                <div className="mb-4 text-5xl">{feature.icon}</div>
-                <h3 className="mb-3 text-2xl font-semibold text-[var(--coffee-brown)]">
+                {/* Icon */}
+                <div className="mb-4 text-5xl">
+                  {feature.icon}
+                </div>
+                
+                <h3 className="mb-3 text-2xl font-bold text-[var(--coffee-brown)]">
                   {feature.title}
                 </h3>
-                <p className="text-gray-600">{feature.description}</p>
+                
+                <p className="text-gray-700">
+                  {feature.description}
+                </p>
               </motion.div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
