@@ -156,7 +156,7 @@ export default function LocationPage() {
         <motion.header
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.9, ease: "easeOut" }}
           className="space-y-3 text-center"
         >
           <p className="text-sm font-semibold uppercase tracking-wider text-[var(--lime-green)]">
@@ -191,7 +191,7 @@ export default function LocationPage() {
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
+                transition={{ duration: 0.9, delay: 0.2, ease: "easeOut" }}
                 className="overflow-hidden rounded-2xl border-2 border-gray-200 bg-white shadow-lg transition-shadow hover:shadow-xl"
               >
                 <div className="h-[400px] w-full">
@@ -242,7 +242,7 @@ export default function LocationPage() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
+                transition={{ duration: 0.9, delay: 0.5, ease: "easeOut" }}
                 className="overflow-hidden rounded-2xl border-2 border-gray-200 bg-white shadow-lg transition-shadow hover:shadow-xl"
               >
                 <div className="relative h-64 w-full sm:h-80">
@@ -260,7 +260,7 @@ export default function LocationPage() {
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              transition={{ duration: 0.9, delay: 0.3, ease: "easeOut" }}
               className="space-y-6"
             >
               {/* Address & Contact Card */}

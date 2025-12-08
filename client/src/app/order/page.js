@@ -28,7 +28,7 @@ export default function OrderPage() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [notes, setNotes] = useState("");
-  const [storeHours, setStoreHours] = useState({ open: 7, close: 20 }); // Default fallback
+  const [storeHours, setStoreHours] = useState({ open: 6, close: 19 }); // Default fallback (6am-7pm)
 
   // Tax rate (8.75% - adjust as needed)
   const taxRate = 0.0875;
