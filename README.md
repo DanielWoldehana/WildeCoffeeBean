@@ -1,5 +1,11 @@
 # Wild Coffee Bean Project Tasks
 
+## Structure & Quickstart
+- Client (Next.js): `cd client && npm install && npm run dev` (default http://localhost:3000)
+- Server (Express placeholder): `cd server && npm install && npm run dev` (default http://localhost:4000)
+- Folders: `client/` for the Next.js app, `server/` for the Express API scaffold.
+- Tasks below track backlog progress; tick `[ ]` to `[x]` as you complete items.
+
 Kanban-ready backlog with titles, descriptions, and acceptance criteria. Check items as you complete them.
 
 ## Foundation
