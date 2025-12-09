@@ -4,6 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import Lottie from "lottie-react";
+import SocialMediaGallery from "@/components/SocialMediaGallery";
 
 export default function Home() {
   const [isVisible, setIsVisible] = useState(false);
@@ -11,6 +13,47 @@ export default function Home() {
   const [prevSlide, setPrevSlide] = useState(0);
   const [direction, setDirection] = useState(1);
   const heroRef = useRef(null);
+  const [freshRoastedAnimation, setFreshRoastedAnimation] = useState(null);
+  const [artOfBrewingAnimation, setArtOfBrewingAnimation] = useState(null);
+
+  // Load Lottie animation data
+  useEffect(() => {
+    // Load fresh-roasted animation
+    fetch("/animations/fresh-roasted.json")
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.text();
+      })
+      .then((text) => {
+        try {
+          const data = JSON.parse(text);
+          setFreshRoastedAnimation(data);
+        } catch (parseError) {
+          console.error("Failed to parse fresh-roasted Lottie JSON:", parseError);
+        }
+      })
+      .catch((err) => console.error("Failed to load fresh-roasted Lottie animation:", err));
+
+    // Load artOfBrewing animation
+    fetch("/animations/artOfBrewing.json")
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.text();
+      })
+      .then((text) => {
+        try {
+          const data = JSON.parse(text);
+          setArtOfBrewingAnimation(data);
+        } catch (parseError) {
+          console.error("Failed to parse artOfBrewing Lottie JSON:", parseError);
+        }
+      })
+      .catch((err) => console.error("Failed to load artOfBrewing Lottie animation:", err));
+  }, []);
 
   const slides = [
     {
@@ -135,7 +178,7 @@ export default function Home() {
               >
                 {/* Background Image with Modern Styling */}
                 <div className="absolute inset-0">
-                  <Image
+        <Image
                     src={slide.bgImage}
                     alt={slide.title}
                     fill
@@ -344,21 +387,21 @@ export default function Home() {
           <div className="grid gap-8 md:grid-cols-3">
             {[
               {
-                icon: "☕",
+                icon: "/animations/fresh-roasted.json",
                 title: "Fresh Roasted",
                 description:
                   "Our beans are roasted in-house daily to ensure maximum flavor and freshness.",
                 enterFrom: "left", // From left side of screen
               },
               {
-                icon: "🌱",
-                title: "Sustainably Sourced",
+                icon: "/animations/artOfBrewing.json",
+                title: "The Art of Brewing",
                 description:
-                  "We partner with ethical farms committed to sustainable practices.",
+                  "We believe in the art of brewing, offering an experience that warms the heart and energizes the soul",
                 enterFrom: "bottom", // From bottom of screen
               },
               {
-                icon: "👨‍🍳",
+                icon: "/images/icons/handcrafted.png",
                 title: "Handcrafted",
                 description:
                   "Every beverage is carefully prepared by our skilled baristas.",
@@ -396,11 +439,52 @@ export default function Home() {
                   delay: index * 0.15,
                   ease: "easeOut"
                 }}
-                className="rounded-xl border-2 border-gray-200 bg-white p-6 text-center shadow-md transition-shadow hover:shadow-lg"
+                className="group rounded-xl border-2 border-gray-200 bg-white p-6 text-center shadow-md transition-shadow hover:shadow-lg"
               >
                 {/* Icon */}
-                <div className="mb-4 text-5xl">
-                  {feature.icon}
+                <div className="mb-4 flex h-20 items-center justify-center overflow-visible">
+                  {feature.icon === "/animations/fresh-roasted.json" ? (
+                    freshRoastedAnimation ? (
+                      <div className="h-20 w-20 transition-all duration-500 ease-out group-hover:scale-150 group-hover:drop-shadow-2xl">
+                        <Lottie
+                          animationData={freshRoastedAnimation}
+                          loop={true}
+                          autoplay={true}
+                          className="h-full w-full"
+                        />
+                      </div>
+                    ) : (
+                      <div className="h-20 w-20 flex items-center justify-center">
+                        <div className="text-5xl">☕</div>
+                      </div>
+                    )
+                  ) : feature.icon === "/animations/artOfBrewing.json" ? (
+                    artOfBrewingAnimation ? (
+                      <div className="h-20 w-20 transition-all duration-500 ease-out group-hover:scale-150 group-hover:drop-shadow-2xl">
+                        <Lottie
+                          animationData={artOfBrewingAnimation}
+                          loop={true}
+                          autoplay={true}
+                          className="h-full w-full"
+                        />
+                      </div>
+                    ) : (
+                      <div className="h-20 w-20 flex items-center justify-center">
+                        <div className="text-5xl">❤️</div>
+                      </div>
+                    )
+                  ) : feature.icon.startsWith("/") ? (
+                    <Image
+                      src={feature.icon}
+                      alt={feature.title}
+                      width={80}
+                      height={80}
+                      className="h-20 w-20 object-contain transition-all duration-500 ease-out group-hover:scale-150 group-hover:drop-shadow-2xl"
+                      unoptimized
+                    />
+                  ) : (
+                    <div className="text-5xl leading-none transition-all duration-500 ease-out group-hover:scale-150 group-hover:drop-shadow-2xl">{feature.icon}</div>
+                  )}
                 </div>
                 
                 <h3 className="mb-3 text-2xl font-bold text-[var(--coffee-brown)]">
@@ -416,6 +500,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Social Media Gallery Section */}
+      <SocialMediaGallery />
 
       {/* CTA Section */}
       <section className="bg-gradient-to-r from-[var(--lime-green)] to-[var(--lime-green-light)] py-20 px-4 sm:px-6 lg:px-8">

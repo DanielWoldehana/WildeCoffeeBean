@@ -18,8 +18,25 @@ export const metadata = {
   description:
     "Wild Bean Coffee offers fresh roasted coffee beans, handcrafted beverages, and delicious treats. Order online for pickup or visit us in store.",
   icons: {
-    icon: "/images/logo/logo.jpeg",
-    apple: "/images/logo/logo.jpeg",
+    icon: [
+      {
+        url: "/images/logo/favicon/favicon1.png",
+        sizes: "192x192",
+        type: "image/png",
+      },
+      {
+        url: "/images/logo/favicon/favicon1.png",
+        sizes: "512x512",
+        type: "image/png",
+      },
+    ],
+    apple: [
+      {
+        url: "/images/logo/favicon/favicon1.png",
+        sizes: "192x192",
+        type: "image/png",
+      },
+    ],
   },
 };
 
