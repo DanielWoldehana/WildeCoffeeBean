@@ -1,7 +1,49 @@
+"use client";
+
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import Lottie from "lottie-react";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const [instagramAnimation, setInstagramAnimation] = useState(null);
+  const [facebookAnimation, setFacebookAnimation] = useState(null);
+
+  // Load Lottie animations
+  useEffect(() => {
+    // Load Instagram animation
+    fetch("/animations/Instagram.json")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.text();
+      })
+      .then((text) => {
+        try {
+          const data = JSON.parse(text);
+          setInstagramAnimation(data);
+        } catch (parseError) {
+          console.error("Failed to parse Instagram Lottie JSON:", parseError);
+        }
+      })
+      .catch((err) => console.error("Failed to load Instagram Lottie animation:", err));
+
+    // Load Facebook animation
+    fetch("/animations/Facebook.json")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.text();
+      })
+      .then((text) => {
+        try {
+          const data = JSON.parse(text);
+          setFacebookAnimation(data);
+        } catch (parseError) {
+          console.error("Failed to parse Facebook Lottie JSON:", parseError);
+        }
+      })
+      .catch((err) => console.error("Failed to load Facebook Lottie animation:", err));
+  }, []);
 
   return (
     <footer className="bg-[var(--coffee-brown-dark)] text-white">
@@ -53,10 +95,53 @@ export default function Footer() {
           </div>
           <div>
             <h3 className="mb-4 text-lg font-semibold">Contact</h3>
-            <p className="text-sm text-gray-300">
+            <p className="mb-4 text-sm text-gray-300">
               Visit our location page for address, hours, and contact
               information.
             </p>
+            {/* Social Media Icons */}
+            <div className="flex items-center gap-4">
+              <motion.a
+                href="https://instagram.com/wildbeancoffee"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-white bg-[var(--lime-green-light)] p-2 transition-all hover:shadow-lg"
+                aria-label="Follow us on Instagram"
+              >
+                {instagramAnimation ? (
+                  <Lottie
+                    animationData={instagramAnimation}
+                    loop={true}
+                    autoplay={true}
+                    className="h-full w-full"
+                  />
+                ) : (
+                  <span className="text-2xl">📷</span>
+                )}
+              </motion.a>
+              <motion.a
+                href="https://facebook.com/wildbeancoffee"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-white bg-[var(--lime-green-light)] p-2 transition-all hover:shadow-lg"
+                aria-label="Follow us on Facebook"
+              >
+                {facebookAnimation ? (
+                  <Lottie
+                    animationData={facebookAnimation}
+                    loop={true}
+                    autoplay={true}
+                    className="h-full w-full"
+                  />
+                ) : (
+                  <span className="text-2xl">👤</span>
+                )}
+              </motion.a>
+            </div>
           </div>
         </div>
         <div className="mt-8 border-t border-gray-700 pt-8 text-center text-sm text-gray-400">

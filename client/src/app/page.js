@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import Lottie from "lottie-react";
+import SocialMediaGallery from "@/components/SocialMediaGallery";
 
 export default function Home() {
   const [isVisible, setIsVisible] = useState(false);
@@ -177,7 +178,7 @@ export default function Home() {
               >
                 {/* Background Image with Modern Styling */}
                 <div className="absolute inset-0">
-                  <Image
+        <Image
                     src={slide.bgImage}
                     alt={slide.title}
                     fill
@@ -499,6 +500,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Social Media Gallery Section */}
+      <SocialMediaGallery />
 
       {/* CTA Section */}
       <section className="bg-gradient-to-r from-[var(--lime-green)] to-[var(--lime-green-light)] py-20 px-4 sm:px-6 lg:px-8">

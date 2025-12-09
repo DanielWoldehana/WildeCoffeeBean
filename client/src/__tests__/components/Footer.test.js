@@ -33,5 +33,15 @@ describe('Footer', () => {
     expect(screen.getByText('Location & Hours').closest('a')).toHaveAttribute('href', '/location')
     expect(screen.getByText('Order Online').closest('a')).toHaveAttribute('href', '/order')
   })
+
+  it('renders social media links', () => {
+    render(<Footer />)
+    const instagramLink = screen.getByLabelText('Follow us on Instagram')
+    const facebookLink = screen.getByLabelText('Follow us on Facebook')
+    expect(instagramLink).toBeInTheDocument()
+    expect(facebookLink).toBeInTheDocument()
+    expect(instagramLink).toHaveAttribute('href', 'https://instagram.com/wildbeancoffee')
+    expect(facebookLink).toHaveAttribute('href', 'https://facebook.com/wildbeancoffee')
+  })
 })
 
