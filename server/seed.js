@@ -1,10 +1,27 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 import { Product, MenuItem, Location } from "./models/index.js";
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-const mongoUri = process.env.MONGODB_URI;
+// Check if we're seeding the test database
+const isTestSeed = process.argv.includes("--test") || process.env.NODE_ENV === "test";
+
+if (isTestSeed) {
+  // Load .env.test for test database seeding
+  dotenv.config({ path: join(__dirname, ".env.test") });
+}
+
+// Also load regular .env as fallback
+dotenv.config({ path: join(__dirname, ".env") });
+
+// Use test URI if seeding test database, otherwise use production URI
+const mongoUri = isTestSeed
+  ? process.env.MONGODB_TEST_URI || process.env.MONGODB_URI
+  : process.env.MONGODB_URI;
 
 const products = [
   {
@@ -289,11 +306,13 @@ const locations = [
 
 async function seed() {
   if (!mongoUri) {
-    throw new Error("MONGODB_URI not set");
+    const envVar = isTestSeed ? "MONGODB_TEST_URI" : "MONGODB_URI";
+    throw new Error(`${envVar} not set`);
   }
 
   await mongoose.connect(mongoUri);
-  console.log("Connected to MongoDB for seeding");
+  const dbName = mongoose.connection.db.databaseName;
+  console.log(`Connected to MongoDB for seeding (database: ${dbName})`);
 
   await Product.deleteMany({});
   await MenuItem.deleteMany({});
