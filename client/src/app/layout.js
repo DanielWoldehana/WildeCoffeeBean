@@ -17,6 +17,10 @@ export const metadata = {
   title: "Wild Bean Coffee - Fresh Roasted Coffee & Handcrafted Beverages",
   description:
     "Wild Bean Coffee offers fresh roasted coffee beans, handcrafted beverages, and delicious treats. Order online for pickup or visit us in store.",
+  icons: {
+    icon: "/images/logo/logo.jpeg",
+    apple: "/images/logo/logo.jpeg",
+  },
 };
 
 export default function RootLayout({ children }) {

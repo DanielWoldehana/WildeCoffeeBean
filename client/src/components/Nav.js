@@ -31,7 +31,7 @@ export default function Nav() {
         <div className="flex h-16 items-center justify-between overflow-visible">
           <Link href="/" className="flex items-center gap-2 overflow-visible">
             <Image
-              src="/images/logo/logoWtext.png"
+              src="/images/logo/LogoWtext.png"
               alt="Wild Bean Coffee"
               width={400}
               height={128}
