@@ -26,7 +26,7 @@ const OrderSchema = new mongoose.Schema(
   {
     customer: {
       name: { type: String, required: true, trim: true },
-      phone: { type: String, trim: true },
+      phone: { type: String, required: true, trim: true },
       email: { type: String, trim: true },
     },
     items: { type: [OrderItemSchema], required: true, validate: (v) => v.length > 0 },

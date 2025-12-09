@@ -23,6 +23,7 @@ function validateOrderPayload(body) {
   const { customer, items, pickupTime, taxRate, notes, paymentRef, paymentStatus } = body;
 
   if (!customer?.name) errors.push("customer.name is required");
+  if (!customer?.phone) errors.push("customer.phone is required");
 
   if (!Array.isArray(items) || items.length === 0) {
     errors.push("items must be a non-empty array");
