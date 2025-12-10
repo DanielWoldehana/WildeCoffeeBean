@@ -257,7 +257,9 @@ export default function SocialMediaGallery() {
                 key={image.id}
                 variants={itemVariants}
                 className={`group overflow-hidden rounded-lg transition-all duration-300 ${
-                  isShortImage ? "flex flex-col bg-white shadow-md hover:shadow-2xl" : "bg-white"
+                  isShortImage
+                    ? "flex flex-col bg-white shadow-md hover:shadow-2xl"
+                    : "bg-white"
                 }`}
               >
                 <a
@@ -378,7 +380,7 @@ export default function SocialMediaGallery() {
           <p className="text-gray-600">
             Tag us{" "}
             <span className="font-semibold text-[var(--coffee-brown)]">
-              @wildbeancoffee
+              @lovewildbeancoffee
             </span>{" "}
             for a chance to be featured!
           </p>

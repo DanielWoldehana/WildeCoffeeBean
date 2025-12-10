@@ -242,6 +242,7 @@ export default function Nav() {
                     onSignOut={signOut}
                     userAvatarAnimation={userAvatarAnimation}
                     onSignOutSuccess={handleSignOutSuccess}
+                    onCloseMobileMenu={() => setIsMobileMenuOpen(false)}
                   />
                 </div>
               ) : (
