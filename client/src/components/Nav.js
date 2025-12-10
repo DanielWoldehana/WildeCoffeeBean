@@ -1,13 +1,39 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
+import ProfileDropdown from "./ProfileDropdown";
+import Lottie from "lottie-react";
+import Toast from "./Toast";
 
 export default function Nav() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
+  const [userAvatarAnimation, setUserAvatarAnimation] = useState(null);
+  const [toast, setToast] = useState(null);
+
+  // Load userAvatar animation
+  useEffect(() => {
+    fetch("/animations/userAvatar.json")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.text();
+      })
+      .then((text) => {
+        try {
+          const data = JSON.parse(text);
+          setUserAvatarAnimation(data);
+        } catch (parseError) {
+          console.error("Failed to parse userAvatar Lottie JSON:", parseError);
+        }
+      })
+      .catch((err) => console.error("Failed to load userAvatar Lottie animation:", err));
+  }, []);
 
   const isActive = (path) => {
     if (path === "/") {
@@ -23,6 +49,35 @@ export default function Nav() {
       return `${baseClass} text-[var(--lime-green)] after:w-full after:bg-[var(--lime-green)]`;
     }
     return `${baseClass} text-[var(--coffee-brown)] hover:text-[var(--lime-green)] after:w-0 after:bg-[var(--lime-green)] hover:after:w-full`;
+  };
+
+  const handleSignOutSuccess = (errorMessage) => {
+    if (errorMessage) {
+      setToast({
+        message: errorMessage,
+        type: "error",
+        position: "center",
+        autoClose: false,
+      });
+    } else {
+      setToast({
+        message: "You have been signed out successfully!",
+        type: "success",
+        position: "center",
+        autoClose: false,
+      });
+    }
+  };
+
+  const handleToastClose = () => {
+    const wasSuccess = toast?.type === "success";
+    setToast(null);
+    // Redirect to home after closing success toast
+    if (wasSuccess) {
+      setTimeout(() => {
+        router.push("/");
+      }, 100);
+    }
   };
 
   return (
@@ -63,6 +118,22 @@ export default function Nav() {
             >
               Order Online
             </Link>
+            {/* Auth Section */}
+            {user ? (
+              <ProfileDropdown
+                user={user}
+                onSignOut={signOut}
+                userAvatarAnimation={userAvatarAnimation}
+                onSignOutSuccess={handleSignOutSuccess}
+              />
+            ) : (
+              <Link
+                href="/auth"
+                className="rounded-full px-4 py-2 text-sm font-semibold text-[var(--coffee-brown)] border-2 border-[var(--coffee-brown)] hover:bg-[var(--coffee-brown)] hover:text-white transition-colors"
+              >
+                Sign In
+              </Link>
+            )}
           </div>
           {/* Mobile menu button */}
           <button
@@ -163,9 +234,39 @@ export default function Nav() {
               >
                 Order Online
               </Link>
+              {/* Mobile Auth Section */}
+              {user ? (
+                <div className="mt-2 flex justify-center">
+                  <ProfileDropdown
+                    user={user}
+                    onSignOut={signOut}
+                    userAvatarAnimation={userAvatarAnimation}
+                    onSignOutSuccess={handleSignOutSuccess}
+                  />
+                </div>
+              ) : (
+                <Link
+                  href="/auth"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="mt-2 rounded-full px-4 py-2 text-center text-base font-semibold text-[var(--coffee-brown)] border-2 border-[var(--coffee-brown)] hover:bg-[var(--coffee-brown)] hover:text-white transition-colors"
+                >
+                  Sign In
+                </Link>
+              )}
             </div>
           </div>
         </div>
+      )}
+
+      {/* Toast Notification */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={handleToastClose}
+          position={toast.position || "center"}
+          autoClose={toast.autoClose !== undefined ? toast.autoClose : false}
+        />
       )}
     </nav>
   );

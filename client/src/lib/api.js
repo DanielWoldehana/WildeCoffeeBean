@@ -6,17 +6,34 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
 /**
- * Base fetch function with error handling
+ * Get authentication token from localStorage
+ */
+function getAuthToken() {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem("token");
+}
+
+/**
+ * Base fetch function with error handling and authentication
  */
 async function fetchJson(url, options = {}) {
   const fullUrl = url.startsWith("http") ? url : `${API_BASE_URL}${url}`;
   
+  // Add auth token to headers if available
+  const token = getAuthToken();
+  const headers = {
+    "Content-Type": "application/json",
+    ...options.headers,
+  };
+  
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+  
   const response = await fetch(fullUrl, {
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
+    headers,
+    credentials: "include", // Include cookies for httpOnly cookie support
   });
 
   if (!response.ok) {
@@ -158,6 +175,71 @@ export const ordersApi = {
       body: JSON.stringify({ status }),
     });
     return result.data;
+  },
+};
+
+/**
+ * Auth API
+ */
+export const authApi = {
+  /**
+   * Sign up a new user
+   * @param {Object} userData - User data (firstName, lastName, email, password, confirmPassword, phone)
+   * @returns {Promise<Object>} User object and token
+   */
+  signUp: async (userData) => {
+    const result = await fetchJson("/api/auth/signup", {
+      method: "POST",
+      body: JSON.stringify(userData),
+    });
+    return result.data;
+  },
+
+  /**
+   * Sign in with email and password
+   * @param {string} email - User email
+   * @param {string} password - User password
+   * @returns {Promise<Object>} User object and token
+   */
+  signIn: async (email, password) => {
+    const result = await fetchJson("/api/auth/signin", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    });
+    return result.data;
+  },
+
+  /**
+   * Sign out current user
+   * @returns {Promise<void>}
+   */
+  signOut: async () => {
+    await fetchJson("/api/auth/signout", {
+      method: "POST",
+    });
+    // Clear local storage
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+    }
+  },
+
+  /**
+   * Get current user information
+   * @returns {Promise<Object>} User object
+   */
+  getMe: async () => {
+    const result = await fetchJson("/api/auth/me");
+    return result.data.user;
+  },
+
+  /**
+   * Get current user's orders
+   * @returns {Promise<Array>} Array of user orders
+   */
+  getUserOrders: async () => {
+    const result = await fetchJson("/api/auth/orders");
+    return result.data.orders || [];
   },
 };
 

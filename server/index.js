@@ -4,20 +4,23 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
 import productRoutes from "./routes/products.js";
 import menuRoutes from "./routes/menu.js";
 import orderRoutes from "./routes/orders.js";
 import locationRoutes from "./routes/location.js";
+import authRoutes from "./routes/auth.js";
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 4000;
 const rawOrigin = process.env.CORS_ORIGIN;
+// Default to localhost:3000 for development if CORS_ORIGIN is not set
 const corsOrigin =
   rawOrigin && rawOrigin.length > 0
     ? rawOrigin.split(",").map((o) => o.trim())
-    : "*";
+    : ["http://localhost:3000"];
 const mongoUri = process.env.MONGODB_URI;
 const dbState = {
   status: "disconnected",
@@ -75,17 +78,32 @@ mongoose.connection.on("error", (err) => {
 app.use(helmet());
 app.use(
   cors({
-    origin: corsOrigin,
-    credentials: corsOrigin === "*" ? false : true,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      // Check if origin is in allowed list
+      const allowedOrigins = Array.isArray(corsOrigin) ? corsOrigin : [corsOrigin];
+      if (allowedOrigins.includes(origin) || allowedOrigins.includes("*")) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true, // Allow credentials for authenticated requests
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 app.use(express.json());
+app.use(cookieParser());
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 
 app.use("/api/products", productRoutes);
 app.use("/api/menu", menuRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/location", locationRoutes);
+app.use("/api/auth", authRoutes);
 
 app.get("/health", (_req, res) => {
   res.json({
