@@ -96,21 +96,21 @@ export default function SocialMediaGallery() {
       src: "/images/menu/Coffee/Latte.jpg",
       alt: "Coffee",
       platform: "instagram",
-      link: "https://instagram.com/wildbeancoffee",
+      link: "https://instagram.com/",
     },
     {
       id: 2,
       src: "/images/menu/Coffee/Cappuccino.jpg",
       alt: "Cappuccino",
       platform: "instagram",
-      link: "https://instagram.com/wildbeancoffee",
+      link: "https://instagram.com/",
     },
     {
       id: 3,
       src: "/images/menu/Bakery/Croissant.jpeg",
       alt: "Bakery",
       platform: "facebook",
-      link: "https://facebook.com/wildbeancoffee",
+      link: "https://facebook.com/",
       title: "Sip. Snap. Share",
       text: "Made for mornings. Perfect for your feed.",
       animation: "selfie",
@@ -120,21 +120,21 @@ export default function SocialMediaGallery() {
       src: "/images/menu/Smoothies/TropicalBliss.jpeg",
       alt: "Smoothie",
       platform: "instagram",
-      link: "https://instagram.com/wildbeancoffee",
+      link: "https://instagram.com/",
     },
     {
       id: 5,
       src: "/images/menu/Coffee/Mocha.png",
       alt: "Mocha",
       platform: "facebook",
-      link: "https://facebook.com/wildbeancoffee",
+      link: "https://facebook.com/",
     },
     {
       id: 6,
       src: "/images/menu/Favorites/ChaiLatte.jpg",
       alt: "Chai Latte",
       platform: "instagram",
-      link: "https://instagram.com/wildbeancoffee",
+      link: "https://instagram.com/",
       title: "Tag @loveWildBeanCoffee",
       text: "Espresso yourself… we won't judge",
       animation: "espressoSelfie",
@@ -144,14 +144,14 @@ export default function SocialMediaGallery() {
       src: "/images/menu/Smoothies/BerryBoost.jpeg",
       alt: "Smoothie",
       platform: "instagram",
-      link: "https://instagram.com/wildbeancoffee",
+      link: "https://instagram.com/",
     },
     {
       id: 8,
       src: "/images/menu/Bakery/Muffin.jpeg",
       alt: "Muffin",
       platform: "facebook",
-      link: "https://facebook.com/wildbeancoffee",
+      link: "https://facebook.com/",
     },
   ];
 
@@ -197,7 +197,7 @@ export default function SocialMediaGallery() {
           {/* Social Media Links */}
           <div className="mt-8 flex items-center justify-center gap-8">
             <motion.a
-              href="https://instagram.com/wildbeancoffee"
+              href="https://instagram.com/"
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.15 }}
@@ -217,7 +217,7 @@ export default function SocialMediaGallery() {
             </motion.a>
 
             <motion.a
-              href="https://facebook.com/wildbeancoffee"
+              href="https://facebook.com/"
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.15 }}

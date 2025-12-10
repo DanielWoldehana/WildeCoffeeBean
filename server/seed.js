@@ -8,7 +8,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Check if we're seeding the test database
-const isTestSeed = process.argv.includes("--test") || process.env.NODE_ENV === "test";
+const isTestSeed =
+  process.argv.includes("--test") || process.env.NODE_ENV === "test";
 
 if (isTestSeed) {
   // Load .env.test for test database seeding
@@ -77,7 +78,7 @@ const menuItems = [
     currency: "USD",
     section: "Coffee & Espresso",
     tags: ["hot", "espresso", "milk"],
-    allergens: ["Lactose"],
+    allergens: ["Dairy"],
     image: "/images/menu/Coffee/Latte.jpg",
     available: true,
     active: true,
@@ -89,7 +90,7 @@ const menuItems = [
     currency: "USD",
     section: "Coffee & Espresso",
     tags: ["hot", "espresso", "foam"],
-    allergens: ["Lactose"],
+    allergens: ["Dairy"],
     image: "/images/menu/Coffee/Cappuccino.jpg",
     available: true,
     active: true,
@@ -101,7 +102,7 @@ const menuItems = [
     currency: "USD",
     section: "Coffee & Espresso",
     tags: ["hot", "espresso", "chocolate"],
-    allergens: ["Lactose"],
+    allergens: ["Dairy"],
     image: "/images/menu/Coffee/Mocha.png",
     available: true,
     active: true,
@@ -125,7 +126,7 @@ const menuItems = [
     currency: "USD",
     section: "Coffee & Espresso",
     tags: ["blended", "espresso", "cold"],
-    allergens: ["Lactose"],
+    allergens: ["Dairy"],
     image: "/images/menu/Coffee/Frappuccino.jpg",
     available: true,
     active: true,
@@ -138,7 +139,7 @@ const menuItems = [
     currency: "USD",
     section: "Other Favorites",
     tags: ["hot", "chocolate"],
-    allergens: ["Lactose"],
+    allergens: ["Dairy"],
     image: "/images/menu/Favorites/HotChocolate.jpg",
     available: true,
     active: true,
@@ -150,7 +151,7 @@ const menuItems = [
     currency: "USD",
     section: "Other Favorites",
     tags: ["hot", "tea", "spiced"],
-    allergens: ["Lactose"],
+    allergens: ["Dairy"],
     image: "/images/menu/Favorites/ChaiLatte.jpg",
     available: true,
     active: true,
@@ -187,7 +188,7 @@ const menuItems = [
     currency: "USD",
     section: "Bakery & Pastries",
     tags: ["bakery", "pastry", "fresh"],
-    allergens: ["Gluten", "Eggs", "Lactose"],
+    allergens: ["Gluten", "Eggs", "Dairy"],
     image: "/images/menu/Bakery/Croissant.jpeg",
     available: true,
     active: true,
@@ -199,7 +200,7 @@ const menuItems = [
     currency: "USD",
     section: "Bakery & Pastries",
     tags: ["bakery", "muffin"],
-    allergens: ["Gluten", "Eggs", "Lactose", "Nuts"],
+    allergens: ["Gluten", "Eggs", "Dairy", "Nuts"],
     image: "/images/menu/Bakery/Muffin.jpeg",
     available: true,
     active: true,
@@ -211,7 +212,7 @@ const menuItems = [
     currency: "USD",
     section: "Bakery & Pastries",
     tags: ["bakery", "pastry", "danish"],
-    allergens: ["Gluten", "Eggs", "Lactose"],
+    allergens: ["Gluten", "Eggs", "Dairy"],
     image: "/images/menu/Bakery/Danish.jpg",
     available: true,
     active: true,
@@ -223,7 +224,7 @@ const menuItems = [
     currency: "USD",
     section: "Bakery & Pastries",
     tags: ["bakery", "bagel", "cream-cheese"],
-    allergens: ["Gluten", "Lactose"],
+    allergens: ["Gluten", "Dairy"],
     image: "/images/menu/Bakery/BagelWCreamCheese.jpeg",
     available: true,
     active: true,
@@ -248,7 +249,7 @@ const menuItems = [
     currency: "USD",
     section: "Smoothies (Organic & Fresh)",
     tags: ["smoothie", "organic", "fresh", "berry"],
-    allergens: ["Lactose"],
+    allergens: ["Dairy"],
     image: "/images/menu/Smoothies/BerryBoost.jpeg",
     available: true,
     active: true,
