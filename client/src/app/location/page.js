@@ -114,6 +114,61 @@ export default function LocationPage() {
     }
   }, [store, mapCenter]);
 
+  // Detect if user is on mobile device
+  const isMobile = () => {
+    if (typeof window === "undefined") return false;
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    );
+  };
+
+  // Handle navigation button click
+  const handleNavigate = () => {
+    if (!store?.address1) return;
+
+    // Use address string instead of coordinates for more reliable navigation
+    const address = `${store.address1}, ${store.city}, ${store.state} ${store.postalCode}`;
+    const encodedAddress = encodeURIComponent(address);
+
+    if (isMobile()) {
+      // For mobile devices, try to open native navigation apps
+      const userAgent = navigator.userAgent.toLowerCase();
+      
+      if (/iphone|ipad|ipod/.test(userAgent)) {
+        // iOS - try Apple Maps first (opens Maps app) using address
+        const appleMapsUrl = `maps://maps.apple.com/?daddr=${encodedAddress}&dirflg=d`;
+        window.location.href = appleMapsUrl;
+        
+        // Fallback to Google Maps if Apple Maps doesn't open
+        setTimeout(() => {
+          const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
+          window.open(googleMapsUrl, '_blank');
+        }, 500);
+      } else if (/android/.test(userAgent)) {
+        // Android - use Google Maps navigation intent with address
+        // First try with address, fallback to coordinates if needed
+        const intentUrl = store?.coordinates?.lat && store?.coordinates?.lng
+          ? `google.navigation:q=${store.coordinates.lat},${store.coordinates.lng}`
+          : `google.navigation:q=${encodedAddress}`;
+        window.location.href = intentUrl;
+        
+        // Fallback to web if intent doesn't work
+        setTimeout(() => {
+          const webUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
+          window.open(webUrl, '_blank');
+        }, 500);
+      } else {
+        // Other mobile devices - use Google Maps web
+        const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
+        window.open(googleMapsUrl, '_blank');
+      }
+    } else {
+      // For desktop, open Google Maps in new tab
+      const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
+      window.open(googleMapsUrl, '_blank');
+    }
+  };
+
   const center = useMemo(() => {
     if (mapCenter) {
       return mapCenter;
@@ -170,7 +225,7 @@ export default function LocationPage() {
                 transition={{ duration: 0.9, delay: 0.2, ease: "easeOut" }}
                 className="overflow-hidden rounded-2xl border-2 border-gray-200 bg-white shadow-lg transition-shadow hover:shadow-xl"
               >
-                <div className="h-[400px] w-full">
+                <div className="relative h-[400px] w-full">
                   <Map 
                     height={400} 
                     center={center} 
@@ -190,6 +245,18 @@ export default function LocationPage() {
                     />
                     {userMarker && <Marker width={30} anchor={userMarker} color="#2563eb" />}
                   </Map>
+                  
+                  {/* Navigation Button Overlay */}
+                  <button
+                    onClick={handleNavigate}
+                    className="absolute bottom-4 right-4 z-10 flex items-center gap-2 rounded-full bg-[var(--lime-green)] px-4 py-2 text-sm font-semibold text-white shadow-lg transition-all hover:bg-[var(--lime-green-dark)] hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[var(--lime-green)] focus:ring-offset-2"
+                    aria-label="Navigate to store"
+                  >
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                    </svg>
+                    <span>Navigate</span>
+                  </button>
                 </div>
                 <div className="flex flex-col gap-2 border-t border-gray-200 bg-gradient-to-r from-[var(--coffee-brown-very-light)] to-white px-6 py-4">
                   <div className="flex items-center gap-2 text-sm text-[var(--coffee-brown)]">
