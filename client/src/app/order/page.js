@@ -5,9 +5,12 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { locationApi, ordersApi } from "@/lib/api";
+import { useAuth } from "@/hooks/useAuth";
+import Lottie from "lottie-react";
 
 export default function OrderPage() {
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -30,6 +33,7 @@ export default function OrderPage() {
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [notes, setNotes] = useState("");
   const [storeHours, setStoreHours] = useState({ open: 6, close: 19 }); // Default fallback (6am-7pm)
+  const [successAnimation, setSuccessAnimation] = useState(null);
 
   // Tax rate (8.75% - adjust as needed)
   const taxRate = 0.0875;
@@ -69,7 +73,34 @@ export default function OrderPage() {
     };
 
     fetchStoreHours();
+
+    // Load SuccessToast animation
+    fetch("/animations/SuccessToast.json")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.text();
+      })
+      .then((text) => {
+        try {
+          const data = JSON.parse(text);
+          setSuccessAnimation(data);
+        } catch (parseError) {
+          console.error("Failed to parse SuccessToast Lottie JSON:", parseError);
+        }
+      })
+      .catch((err) => console.error("Failed to load SuccessToast Lottie animation:", err));
   }, []);
+
+  // Pre-fill customer info when user is signed in
+  useEffect(() => {
+    if (user && !authLoading) {
+      setCustomerInfo({
+        name: `${user.firstName} ${user.lastName}`,
+        phone: user.phone || "",
+        email: user.email || "",
+      });
+    }
+  }, [user, authLoading]);
 
   // Calculate the first available time slot for today
   const getFirstAvailableTime = () => {
@@ -326,18 +357,21 @@ export default function OrderPage() {
   const validateForm = () => {
     const errors = {};
     
-    if (!customerInfo.name.trim()) {
-      errors.name = "Name is required";
-    }
-    
-    if (!customerInfo.phone.trim()) {
-      errors.phone = "Phone number is required";
-    } else if (!validatePhone(customerInfo.phone)) {
-      errors.phone = "Please enter a valid phone number (at least 10 digits)";
-    }
-    
-    if (customerInfo.email && !validateEmail(customerInfo.email)) {
-      errors.email = "Please enter a valid email address";
+    // Only validate customer info if user is not signed in
+    if (!user) {
+      if (!customerInfo.name.trim()) {
+        errors.name = "Name is required";
+      }
+      
+      if (!customerInfo.phone.trim()) {
+        errors.phone = "Phone number is required";
+      } else if (!validatePhone(customerInfo.phone)) {
+        errors.phone = "Please enter a valid phone number (at least 10 digits)";
+      }
+      
+      if (customerInfo.email && !validateEmail(customerInfo.email)) {
+        errors.email = "Please enter a valid email address";
+      }
     }
     
     setValidationErrors(errors);
@@ -368,11 +402,20 @@ export default function OrderPage() {
         quantity: item.quantity,
       }));
 
+      // Use user info if signed in, otherwise use form data
+      const customerData = user
+        ? {
+            name: `${user.firstName} ${user.lastName}`,
+            phone: user.phone,
+            email: user.email || undefined,
+          }
+        : {
+            ...customerInfo,
+            email: customerInfo.email || undefined,
+          };
+
       const orderData = {
-        customer: {
-          ...customerInfo,
-          email: customerInfo.email || undefined,
-        },
+        customer: customerData,
         items: orderItems,
         taxRate,
         pickupTime: pickupTime || undefined,
@@ -404,20 +447,31 @@ export default function OrderPage() {
             className="rounded-lg bg-white p-8 text-center shadow-lg"
           >
             <div className="mb-6">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--lime-green)]">
-                <svg
-                  className="h-8 w-8 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
+              <div className="mx-auto mb-4 flex h-24 w-24 items-center justify-center">
+                {successAnimation ? (
+                  <Lottie
+                    animationData={successAnimation}
+                    loop={true}
+                    autoplay={true}
+                    className="h-full w-full"
                   />
-                </svg>
+                ) : (
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--lime-green)]">
+                    <svg
+                      className="h-8 w-8 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  </div>
+                )}
               </div>
               <h2 className="mb-2 text-3xl font-bold text-[var(--coffee-brown)]">
                 Order Placed Successfully!
@@ -594,7 +648,7 @@ export default function OrderPage() {
               className="rounded-lg bg-white p-6 shadow-md"
             >
               <h2 className="mb-6 text-2xl font-semibold text-[var(--coffee-brown)]">
-                Customer Information
+                {user ? "Order Details" : "Customer Information"}
               </h2>
 
               {error && (
@@ -604,88 +658,93 @@ export default function OrderPage() {
               )}
 
               <div className="space-y-4">
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-[var(--coffee-brown)]">
-                    Name *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={customerInfo.name}
-                    onChange={(e) => {
-                      setCustomerInfo({ ...customerInfo, name: e.target.value });
-                      if (validationErrors.name) {
-                        setValidationErrors({ ...validationErrors, name: "" });
-                      }
-                    }}
-                    className={`w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 ${
-                      validationErrors.name
-                        ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                        : "border-gray-300 focus:border-[var(--lime-green)] focus:ring-[var(--lime-green)]"
-                    }`}
-                    placeholder="John Doe"
-                  />
-                  {validationErrors.name && (
-                    <p className="mt-1 text-sm text-red-600">{validationErrors.name}</p>
-                  )}
-                </div>
+                {/* Only show customer info fields if user is not signed in */}
+                {!user && (
+                  <>
+                    <div>
+                      <label className="mb-2 block text-sm font-medium text-[var(--coffee-brown)]">
+                        Name *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={customerInfo.name}
+                        onChange={(e) => {
+                          setCustomerInfo({ ...customerInfo, name: e.target.value });
+                          if (validationErrors.name) {
+                            setValidationErrors({ ...validationErrors, name: "" });
+                          }
+                        }}
+                        className={`w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 ${
+                          validationErrors.name
+                            ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                            : "border-gray-300 focus:border-[var(--lime-green)] focus:ring-[var(--lime-green)]"
+                        }`}
+                        placeholder="John Doe"
+                      />
+                      {validationErrors.name && (
+                        <p className="mt-1 text-sm text-red-600">{validationErrors.name}</p>
+                      )}
+                    </div>
 
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-[var(--coffee-brown)]">
-                    Phone *
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    value={customerInfo.phone}
-                    onChange={(e) => {
-                      setCustomerInfo({
-                        ...customerInfo,
-                        phone: e.target.value,
-                      });
-                      if (validationErrors.phone) {
-                        setValidationErrors({ ...validationErrors, phone: "" });
-                      }
-                    }}
-                    className={`w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 ${
-                      validationErrors.phone
-                        ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                        : "border-gray-300 focus:border-[var(--lime-green)] focus:ring-[var(--lime-green)]"
-                    }`}
-                    placeholder="(555) 123-4567"
-                  />
-                  {validationErrors.phone && (
-                    <p className="mt-1 text-sm text-red-600">{validationErrors.phone}</p>
-                  )}
-                </div>
+                    <div>
+                      <label className="mb-2 block text-sm font-medium text-[var(--coffee-brown)]">
+                        Phone *
+                      </label>
+                      <input
+                        type="tel"
+                        required
+                        value={customerInfo.phone}
+                        onChange={(e) => {
+                          setCustomerInfo({
+                            ...customerInfo,
+                            phone: e.target.value,
+                          });
+                          if (validationErrors.phone) {
+                            setValidationErrors({ ...validationErrors, phone: "" });
+                          }
+                        }}
+                        className={`w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 ${
+                          validationErrors.phone
+                            ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                            : "border-gray-300 focus:border-[var(--lime-green)] focus:ring-[var(--lime-green)]"
+                        }`}
+                        placeholder="(555) 123-4567"
+                      />
+                      {validationErrors.phone && (
+                        <p className="mt-1 text-sm text-red-600">{validationErrors.phone}</p>
+                      )}
+                    </div>
 
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-[var(--coffee-brown)]">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    value={customerInfo.email}
-                    onChange={(e) => {
-                      setCustomerInfo({
-                        ...customerInfo,
-                        email: e.target.value,
-                      });
-                      if (validationErrors.email) {
-                        setValidationErrors({ ...validationErrors, email: "" });
-                      }
-                    }}
-                    className={`w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 ${
-                      validationErrors.email
-                        ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                        : "border-gray-300 focus:border-[var(--lime-green)] focus:ring-[var(--lime-green)]"
-                    }`}
-                    placeholder="john@example.com (optional)"
-                  />
-                  {validationErrors.email && (
-                    <p className="mt-1 text-sm text-red-600">{validationErrors.email}</p>
-                  )}
-                </div>
+                    <div>
+                      <label className="mb-2 block text-sm font-medium text-[var(--coffee-brown)]">
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        value={customerInfo.email}
+                        onChange={(e) => {
+                          setCustomerInfo({
+                            ...customerInfo,
+                            email: e.target.value,
+                          });
+                          if (validationErrors.email) {
+                            setValidationErrors({ ...validationErrors, email: "" });
+                          }
+                        }}
+                        className={`w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 ${
+                          validationErrors.email
+                            ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                            : "border-gray-300 focus:border-[var(--lime-green)] focus:ring-[var(--lime-green)]"
+                        }`}
+                        placeholder="john@example.com (optional)"
+                      />
+                      {validationErrors.email && (
+                        <p className="mt-1 text-sm text-red-600">{validationErrors.email}</p>
+                      )}
+                    </div>
+                  </>
+                )}
 
                 <div>
                   <label className="mb-2 block text-sm font-medium text-[var(--coffee-brown)]">

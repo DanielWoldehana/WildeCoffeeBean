@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import { Order } from "../models/index.js";
 import { errorResponse, isObjectId } from "../utils/validation.js";
+import { optionalAuth } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -57,7 +58,8 @@ function validateOrderPayload(body) {
 }
 
 // POST /api/orders
-router.post("/", async (req, res, next) => {
+// Use optionalAuth to support both authenticated and guest orders
+router.post("/", optionalAuth, async (req, res, next) => {
   try {
     const errors = validateOrderPayload(req.body);
     if (errors.length) {
@@ -68,7 +70,14 @@ router.post("/", async (req, res, next) => {
       req.body;
     const totals = computeTotals(items, taxRate);
 
+    // Check if user is authenticated (req.user is set by optionalAuth middleware if token is valid)
+    // If no req.user, it's a guest order
+    const isGuest = !req.user;
+    const userId = req.user?._id || undefined;
+
     const order = await Order.create({
+      userId,
+      isGuest,
       customer,
       items,
       pickupTime,

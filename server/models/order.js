@@ -24,6 +24,17 @@ const TotalsSchema = new mongoose.Schema(
 
 const OrderSchema = new mongoose.Schema(
   {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      index: true,
+    }, // Link to user if authenticated
+    isGuest: {
+      type: Boolean,
+      required: true,
+      default: true,
+      index: true,
+    }, // true if order placed by guest (not signed in), false if placed by authenticated user
     customer: {
       name: { type: String, required: true, trim: true },
       phone: { type: String, required: true, trim: true },
@@ -49,6 +60,7 @@ const OrderSchema = new mongoose.Schema(
 );
 
 OrderSchema.index({ status: 1, paymentStatus: 1, createdAt: -1 });
+OrderSchema.index({ userId: 1, createdAt: -1 }); // Index for user orders queries
 
 const Order = mongoose.models.Order || mongoose.model("Order", OrderSchema);
 export default Order;
