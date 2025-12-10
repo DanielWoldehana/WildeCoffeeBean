@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Lottie from "lottie-react";
 
-export default function ProfileDropdown({ user, onSignOut, userAvatarAnimation, onSignOutSuccess }) {
+export default function ProfileDropdown({ user, onSignOut, userAvatarAnimation, onSignOutSuccess, onCloseMobileMenu }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const router = useRouter();
@@ -29,11 +29,22 @@ export default function ProfileDropdown({ user, onSignOut, userAvatarAnimation, 
 
   const handleViewOrders = () => {
     setIsOpen(false);
-    router.push("/orders");
+    // Close mobile menu if callback is provided (for mobile view)
+    if (onCloseMobileMenu) {
+      onCloseMobileMenu();
+    }
+    // Small delay to ensure menu closes before navigation
+    setTimeout(() => {
+      router.push("/orders");
+    }, 100);
   };
 
   const handleSignOut = async () => {
     setIsOpen(false);
+    // Close mobile menu if callback is provided (for mobile view)
+    if (onCloseMobileMenu) {
+      onCloseMobileMenu();
+    }
     try {
       await onSignOut();
       // Notify parent component to show toast (before component unmounts)
@@ -102,7 +113,7 @@ export default function ProfileDropdown({ user, onSignOut, userAvatarAnimation, 
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
-                View Previous Orders
+                Orders
               </button>
               <button
                 onClick={handleSignOut}
