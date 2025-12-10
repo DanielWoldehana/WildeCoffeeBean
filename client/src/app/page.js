@@ -2,7 +2,12 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import Lottie from "lottie-react";
 import SocialMediaGallery from "@/components/SocialMediaGallery";
@@ -31,10 +36,15 @@ export default function Home() {
           const data = JSON.parse(text);
           setFreshRoastedAnimation(data);
         } catch (parseError) {
-          console.error("Failed to parse fresh-roasted Lottie JSON:", parseError);
+          console.error(
+            "Failed to parse fresh-roasted Lottie JSON:",
+            parseError
+          );
         }
       })
-      .catch((err) => console.error("Failed to load fresh-roasted Lottie animation:", err));
+      .catch((err) =>
+        console.error("Failed to load fresh-roasted Lottie animation:", err)
+      );
 
     // Load artOfBrewing animation
     fetch("/animations/artOfBrewing.json")
@@ -49,29 +59,37 @@ export default function Home() {
           const data = JSON.parse(text);
           setArtOfBrewingAnimation(data);
         } catch (parseError) {
-          console.error("Failed to parse artOfBrewing Lottie JSON:", parseError);
+          console.error(
+            "Failed to parse artOfBrewing Lottie JSON:",
+            parseError
+          );
         }
       })
-      .catch((err) => console.error("Failed to load artOfBrewing Lottie animation:", err));
+      .catch((err) =>
+        console.error("Failed to load artOfBrewing Lottie animation:", err)
+      );
   }, []);
 
   const slides = [
     {
       id: 1,
       title: "Wild Bean Coffee",
+      titleSubtext: "Smoothie Cafe",
       subtitle: "Fresh Roasted Coffee & Handcrafted Beverages",
-      description: "Experience the perfect blend of quality beans and artisanal craftsmanship.",
+      description:
+        "Experience the perfect blend of quality beans and artisanal craftsmanship.",
       cta: "Shop Coffee Beans",
       ctaLink: "/shop",
       cta2: "Order Online",
       cta2Link: "/order",
-      bgImage: "/images/menu/Coffee/Latte.jpg",
+      bgImage: "/images/menu/Coffee/Mocha.png",
     },
     {
       id: 2,
       title: "Premium Coffee Beans",
       subtitle: "Ethically Sourced & Freshly Roasted",
-      description: "Discover our selection of single-origin and specialty coffee beans from around the world.",
+      description:
+        "Discover our selection of single-origin and specialty coffee beans from around the world.",
       cta: "Browse Shop",
       ctaLink: "/shop",
       cta2: "View Menu",
@@ -82,7 +100,8 @@ export default function Home() {
       id: 3,
       title: "Handcrafted Beverages",
       subtitle: "Made with Care & Passion",
-      description: "From classic espresso to refreshing smoothies, every drink is crafted to perfection.",
+      description:
+        "From classic espresso to refreshing smoothies, every drink is crafted to perfection.",
       cta: "View Menu",
       ctaLink: "/menu",
       cta2: "Order Now",
@@ -93,12 +112,13 @@ export default function Home() {
       id: 4,
       title: "Visit Our Cafe",
       subtitle: "Experience the Atmosphere",
-      description: "Come visit us at 1532 Rockville Pike for an unforgettable coffee experience.",
+      description:
+        "Come visit us at 1532 Rockville Pike for an unforgettable coffee experience.",
       cta: "Get Directions",
       ctaLink: "/location",
       cta2: "Order Online",
       cta2Link: "/order",
-      bgImage: "/images/menu/Coffee/Mocha.png",
+      bgImage: "/images/menu/Coffee/Latte.jpg",
     },
   ];
 
@@ -160,10 +180,10 @@ export default function Home() {
           {slides.map((slide, index) => {
             const isActive = index === currentSlide;
             const isPrev = index === prevSlide && prevSlide !== currentSlide;
-            
+
             // Only render current slide and previous slide during transition
             if (!isActive && !isPrev) return null;
-            
+
             return (
               <motion.div
                 key={slide.id}
@@ -178,7 +198,7 @@ export default function Home() {
               >
                 {/* Background Image with Modern Styling */}
                 <div className="absolute inset-0">
-        <Image
+                  <Image
                     src={slide.bgImage}
                     alt={slide.title}
                     fill
@@ -189,10 +209,11 @@ export default function Home() {
                   {/* Modern overlay gradient */}
                   <div className="absolute inset-0 bg-gradient-to-br from-[var(--coffee-brown-dark)]/85 via-[var(--coffee-brown)]/75 to-[var(--coffee-brown-light)]/85"></div>
                   {/* Subtle vignette effect */}
-                  <div 
+                  <div
                     className="absolute inset-0"
                     style={{
-                      background: 'radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.3) 100%)'
+                      background:
+                        "radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.3) 100%)",
                     }}
                   ></div>
                 </div>
@@ -209,7 +230,28 @@ export default function Home() {
                       transition={{ delay: 0.3, duration: 0.6, type: "spring" }}
                       className="mb-6 text-5xl font-bold leading-tight text-white sm:text-6xl md:text-7xl lg:text-8xl"
                     >
-                      {slide.title}
+                      {slide.title === "Wild Bean Coffee" ? (
+                        <>Wild Bean Coffee</>
+                      ) : (
+                        slide.title
+                      )}
+                      {slide.titleSubtext && (
+                        <>
+                          <br />
+                          <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl">
+                            <span className="inline-block pl-8 sm:pl-12 md:pl-16 lg:pl-20">
+                              &
+                            </span>
+                            <br />
+                            <span className="inline-block pl-4 sm:pl-6 md:pl-8 lg:pl-10">
+                              <span className="text-[var(--lime-green)]">
+                                Smoothie
+                              </span>{" "}
+                              Cafe
+                            </span>
+                          </span>
+                        </>
+                      )}
                     </motion.h1>
                     <motion.p
                       initial={{ opacity: 0, y: 20 }}
@@ -356,15 +398,15 @@ export default function Home() {
             initial={{ opacity: 0, y: 50, scale: 0.95 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, margin: "-100px" }}
-            transition={{ 
-              duration: 0.8, 
+            transition={{
+              duration: 0.8,
               ease: [0.16, 1, 0.3, 1],
               type: "spring",
-              stiffness: 100
+              stiffness: 100,
             }}
             className="mb-16 text-center"
           >
-            <motion.h2 
+            <motion.h2
               className="mb-4 text-4xl font-bold text-[var(--coffee-brown)] sm:text-5xl"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -373,7 +415,7 @@ export default function Home() {
             >
               Why Choose Wild Bean Coffee?
             </motion.h2>
-            <motion.p 
+            <motion.p
               className="mx-auto max-w-2xl text-lg text-gray-600"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -426,75 +468,75 @@ export default function Home() {
 
               return (
                 <motion.div
-                key={index}
-                initial={initialPos}
-                whileInView={{ 
-                  opacity: 1, 
-                  y: 0,
-                  x: 0,
-                }}
-                viewport={{ once: true, margin: "0px" }}
-                transition={{ 
-                  duration: 0.9, 
-                  delay: index * 0.15,
-                  ease: "easeOut"
-                }}
-                className="group rounded-xl border-2 border-gray-200 bg-white p-6 text-center shadow-md transition-shadow hover:shadow-lg"
-              >
-                {/* Icon */}
-                <div className="mb-4 flex h-20 items-center justify-center overflow-visible">
-                  {feature.icon === "/animations/fresh-roasted.json" ? (
-                    freshRoastedAnimation ? (
-                      <div className="h-20 w-20 transition-all duration-500 ease-out group-hover:scale-150 group-hover:drop-shadow-2xl">
-                        <Lottie
-                          animationData={freshRoastedAnimation}
-                          loop={true}
-                          autoplay={true}
-                          className="h-full w-full"
-                        />
-                      </div>
+                  key={index}
+                  initial={initialPos}
+                  whileInView={{
+                    opacity: 1,
+                    y: 0,
+                    x: 0,
+                  }}
+                  viewport={{ once: true, margin: "0px" }}
+                  transition={{
+                    duration: 0.9,
+                    delay: index * 0.15,
+                    ease: "easeOut",
+                  }}
+                  className="group rounded-xl border-2 border-gray-200 bg-white p-6 text-center shadow-md transition-shadow hover:shadow-lg"
+                >
+                  {/* Icon */}
+                  <div className="mb-4 flex h-20 items-center justify-center overflow-visible">
+                    {feature.icon === "/animations/fresh-roasted.json" ? (
+                      freshRoastedAnimation ? (
+                        <div className="h-20 w-20 transition-all duration-500 ease-out group-hover:scale-150 group-hover:drop-shadow-2xl">
+                          <Lottie
+                            animationData={freshRoastedAnimation}
+                            loop={true}
+                            autoplay={true}
+                            className="h-full w-full"
+                          />
+                        </div>
+                      ) : (
+                        <div className="h-20 w-20 flex items-center justify-center">
+                          <div className="text-5xl">☕</div>
+                        </div>
+                      )
+                    ) : feature.icon === "/animations/artOfBrewing.json" ? (
+                      artOfBrewingAnimation ? (
+                        <div className="h-20 w-20 transition-all duration-500 ease-out group-hover:scale-150 group-hover:drop-shadow-2xl">
+                          <Lottie
+                            animationData={artOfBrewingAnimation}
+                            loop={true}
+                            autoplay={true}
+                            className="h-full w-full"
+                          />
+                        </div>
+                      ) : (
+                        <div className="h-20 w-20 flex items-center justify-center">
+                          <div className="text-5xl">❤️</div>
+                        </div>
+                      )
+                    ) : feature.icon.startsWith("/") ? (
+                      <Image
+                        src={feature.icon}
+                        alt={feature.title}
+                        width={80}
+                        height={80}
+                        className="h-20 w-20 object-contain transition-all duration-500 ease-out group-hover:scale-150 group-hover:drop-shadow-2xl"
+                        unoptimized
+                      />
                     ) : (
-                      <div className="h-20 w-20 flex items-center justify-center">
-                        <div className="text-5xl">☕</div>
+                      <div className="text-5xl leading-none transition-all duration-500 ease-out group-hover:scale-150 group-hover:drop-shadow-2xl">
+                        {feature.icon}
                       </div>
-                    )
-                  ) : feature.icon === "/animations/artOfBrewing.json" ? (
-                    artOfBrewingAnimation ? (
-                      <div className="h-20 w-20 transition-all duration-500 ease-out group-hover:scale-150 group-hover:drop-shadow-2xl">
-                        <Lottie
-                          animationData={artOfBrewingAnimation}
-                          loop={true}
-                          autoplay={true}
-                          className="h-full w-full"
-                        />
-                      </div>
-                    ) : (
-                      <div className="h-20 w-20 flex items-center justify-center">
-                        <div className="text-5xl">❤️</div>
-                      </div>
-                    )
-                  ) : feature.icon.startsWith("/") ? (
-                    <Image
-                      src={feature.icon}
-                      alt={feature.title}
-                      width={80}
-                      height={80}
-                      className="h-20 w-20 object-contain transition-all duration-500 ease-out group-hover:scale-150 group-hover:drop-shadow-2xl"
-                      unoptimized
-                    />
-                  ) : (
-                    <div className="text-5xl leading-none transition-all duration-500 ease-out group-hover:scale-150 group-hover:drop-shadow-2xl">{feature.icon}</div>
-                  )}
-                </div>
-                
-                <h3 className="mb-3 text-2xl font-bold text-[var(--coffee-brown)]">
-                  {feature.title}
-                </h3>
-                
-                <p className="text-gray-700">
-                  {feature.description}
-                </p>
-              </motion.div>
+                    )}
+                  </div>
+
+                  <h3 className="mb-3 text-2xl font-bold text-[var(--coffee-brown)]">
+                    {feature.title}
+                  </h3>
+
+                  <p className="text-gray-700">{feature.description}</p>
+                </motion.div>
               );
             })}
           </div>

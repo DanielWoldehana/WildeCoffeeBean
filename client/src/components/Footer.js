@@ -102,7 +102,7 @@ export default function Footer() {
             {/* Social Media Icons */}
             <div className="flex items-center gap-4">
               <motion.a
-                href="https://instagram.com/wildbeancoffee"
+                href="https://instagram.com/"
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.1 }}
@@ -122,7 +122,7 @@ export default function Footer() {
                 )}
               </motion.a>
               <motion.a
-                href="https://facebook.com/wildbeancoffee"
+                href="https://facebook.com/"
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.1 }}
