@@ -288,7 +288,7 @@ const locations = [
     state: "MD",
     postalCode: "20852",
     country: "US",
-    coordinates: { lat: 39.0834, lng: -77.1533 },
+    coordinates: { lat: 39.0629, lng: -77.1291 },
     phone: "555-555-1234",
     email: "hello@wildbeancoffee.com",
     mapsUrl: "",
